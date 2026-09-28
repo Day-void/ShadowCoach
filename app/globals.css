@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* ── ApexCombat.AI — Black & Gold Design System ────────────────────────── */
+:root {
+  --gold-100: #fef9e7;
+  --gold-300: #fde68a;
+  --gold-400: #f59e0b;
+  --gold-500: #d4af37;
+  --gold-600: #b7962e;
+  --gold-700: #92760f;
+  --obsidian:   #09090c;
+  --obsidian-2: #0f0f13;
+  --obsidian-3: #14141a;
+  --obsidian-4: #1a1a22;
+  --obsidian-border: #2a2a36;
+}
+
+html, body {
+  background-color: var(--obsidian);
+  color: #e5e5ef;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(212, 175, 55, 0.3);
+  color: #fde68a;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--obsidian-3); }
+::-webkit-scrollbar-thumb { background: var(--gold-600); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-500); }
+
+:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+@keyframes goldShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.gold-shimmer {
+  background: linear-gradient(90deg, #1a1a22 25%, #2a2518 50%, #1a1a22 75%);
+  background-size: 200% 100%;
+  animation: goldShimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(212, 175, 55, 0.45); }
+  50%       { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+}
+.gold-pulse { animation: goldPulse 2s ease-in-out infinite; }
