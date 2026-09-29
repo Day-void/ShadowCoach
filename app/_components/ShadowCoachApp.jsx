@@ -3,10 +3,11 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import CoachCamera from './CoachCamera';
 import WorkoutCompletionModal from './WorkoutCompletionModal';
+import WorkoutAnimationDemo from './WorkoutAnimationDemo';
 import {
   Flame, Award, Sparkles, Dumbbell, CheckCircle2,
   Sliders, RefreshCw, Clock, Target, ChevronDown, ChevronUp,
-  ShieldCheck, Zap,
+  ShieldCheck, Zap, Eye,
 } from 'lucide-react';
 import { useCoachStore } from '@/lib/store/useCoachStore';
 
@@ -54,6 +55,7 @@ export default function ShadowCoachApp() {
   const [userLevel, setUserLevel] = useState('intermediate');
   const [selectedEquipment, setSelectedEquipment] = useState(['mat', 'dumbbells']);
   const [showConfig, setShowConfig] = useState(false);
+  const [showDemo, setShowDemo] = useState(true);
   const abortControllerRef = useRef(null);
 
   useEffect(() => {
@@ -154,6 +156,19 @@ export default function ShadowCoachApp() {
           >
             <ShieldCheck className="w-3.5 h-3.5" /> Biometrics Shield Active
           </div>
+
+          <button
+            onClick={() => setShowDemo((v) => !v)}
+            className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all"
+            style={{
+              background: showDemo ? 'rgba(212,175,55,0.15)' : '#14141a',
+              border: `1px solid ${showDemo ? 'rgba(212,175,55,0.5)' : '#2a2a36'}`,
+              color: showDemo ? '#d4af37' : '#c0c0c8',
+            }}
+          >
+            <Eye className="w-3.5 h-3.5" style={{ color: '#d4af37' }} />
+            {showDemo ? 'Hide Demo' : 'Form Demo'}
+          </button>
 
           <button
             onClick={() => setShowConfig((v) => !v)}
@@ -332,7 +347,16 @@ export default function ShadowCoachApp() {
                       Active Objective{activeRoutine ? ` — Round ${currentRoundIndex + 1}` : ''}
                     </span>
                   </div>
-                  {activeRound?.trackingType && <TrackingBadge type={activeRound.trackingType} />}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowDemo((prev) => !prev)}
+                      className="text-[10px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 transition"
+                    >
+                      <Eye className="w-3 h-3" />
+                      {showDemo ? 'Close Demo' : 'View Form Demo'}
+                    </button>
+                    {activeRound?.trackingType && <TrackingBadge type={activeRound.trackingType} />}
+                  </div>
                 </div>
                 <h3 className="font-black text-white text-base">
                   {activeRound?.name || 'Straight Left Jab & Stance Guard'}
@@ -341,6 +365,16 @@ export default function ShadowCoachApp() {
                   {activeRound?.coachingCue || 'Extend your arm fully and keep your trailing hand protecting your chin.'}
                 </p>
               </div>
+
+              {/* Workout Animation Demo */}
+              {showDemo && (
+                <div className="pt-1">
+                  <WorkoutAnimationDemo
+                    trackingType={activeRound?.trackingType || 'punch'}
+                    onClose={() => setShowDemo(false)}
+                  />
+                </div>
+              )}
 
               {/* Next / Last Round */}
               {nextRound ? (
