@@ -7,7 +7,7 @@ import WorkoutAnimationDemo from './WorkoutAnimationDemo';
 import {
   Flame, Award, Sparkles, Dumbbell, CheckCircle2,
   Sliders, RefreshCw, Clock, Target, ChevronDown, ChevronUp,
-  ShieldCheck, Zap, Eye,
+  ShieldCheck, Zap, Eye, Sun, Moon,
 } from 'lucide-react';
 import { useCoachStore } from '@/lib/store/useCoachStore';
 
@@ -49,6 +49,8 @@ export default function ShadowCoachApp() {
   const setRoutine        = useCoachStore((s) => s.setRoutine);
   const activeRoutine     = useCoachStore((s) => s.activeRoutine);
   const currentRoundIndex = useCoachStore((s) => s.currentRoundIndex);
+  const theme             = useCoachStore((s) => s.theme);
+  const toggleTheme       = useCoachStore((s) => s.toggleTheme);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error,     setError]     = useState(null);
@@ -57,6 +59,16 @@ export default function ShadowCoachApp() {
   const [showConfig, setShowConfig] = useState(false);
   const [showDemo, setShowDemo] = useState(true);
   const abortControllerRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      if (theme === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
+    }
+  }, [theme]);
 
   useEffect(() => {
     return () => {
@@ -119,13 +131,25 @@ export default function ShadowCoachApp() {
   const activeRound = activeRoutine?.rounds?.[currentRoundIndex];
   const nextRound   = activeRoutine?.rounds?.[currentRoundIndex + 1];
 
+  const isLight = theme === 'light';
+
   return (
-    <div className="min-h-screen text-white font-sans" style={{ background: '#09090c' }}>
+    <div
+      className="min-h-screen font-sans transition-colors duration-200"
+      style={{
+        background: isLight ? '#f8f9fa' : '#09090c',
+        color: isLight ? '#1a1a24' : '#ffffff',
+      }}
+    >
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <header
-        className="sticky top-0 z-30 px-6 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-        style={{ background: 'rgba(9,9,12,0.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(212,175,55,0.12)' }}
+        className="sticky top-0 z-30 px-6 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between transition-colors duration-200"
+        style={{
+          background: isLight ? 'rgba(255,255,255,0.92)' : 'rgba(9,9,12,0.92)',
+          backdropFilter: 'blur(12px)',
+          borderBottom: isLight ? '1px solid rgba(183,150,46,0.2)' : '1px solid rgba(212,175,55,0.12)',
+        }}
       >
         {/* Logo */}
         <div className="flex items-center gap-3">
@@ -138,11 +162,14 @@ export default function ShadowCoachApp() {
           <div>
             <span
               className="text-xl font-black tracking-tighter block leading-none"
-              style={{ background: 'linear-gradient(90deg, #d4af37, #f59e0b, #fde68a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+              style={{ background: 'linear-gradient(90deg, #d4af37, #f59e0b, #d4af37)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
             >
               ApexCombat.AI
             </span>
-            <span className="text-[10px] text-stone-500 font-medium uppercase tracking-widest">
+            <span
+              className="text-[10px] font-medium uppercase tracking-widest"
+              style={{ color: isLight ? '#6c757d' : '#71717a' }}
+            >
               Vision-Guided Combat Conditioning
             </span>
           </div>
@@ -152,30 +179,72 @@ export default function ShadowCoachApp() {
         <div className="flex flex-wrap items-center gap-3">
           <div
             className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-semibold"
-            style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+            style={{
+              background: isLight ? 'rgba(212,175,55,0.1)' : 'rgba(212,175,55,0.06)',
+              border: isLight ? '1px solid rgba(183,150,46,0.35)' : '1px solid rgba(212,175,55,0.2)',
+              color: isLight ? '#8a6e0c' : '#d4af37',
+            }}
           >
             <ShieldCheck className="w-3.5 h-3.5" /> Biometrics Shield Active
           </div>
+
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-all active:scale-95"
+            style={{
+              background: isLight ? '#ffffff' : '#14141a',
+              border: `1px solid ${isLight ? '#dee2e6' : '#2a2a36'}`,
+              color: isLight ? '#495057' : '#c0c0c8',
+              boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+            }}
+            title={isLight ? 'Switch to Dark Obsidian Mode' : 'Switch to Light Championship Mode'}
+            aria-label={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          >
+            {isLight ? (
+              <>
+                <Moon className="w-3.5 h-3.5 text-amber-600" />
+                <span>Dark</span>
+              </>
+            ) : (
+              <>
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+                <span>Light</span>
+              </>
+            )}
+          </button>
 
           <button
             onClick={() => setShowDemo((v) => !v)}
             className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all"
             style={{
-              background: showDemo ? 'rgba(212,175,55,0.15)' : '#14141a',
-              border: `1px solid ${showDemo ? 'rgba(212,175,55,0.5)' : '#2a2a36'}`,
-              color: showDemo ? '#d4af37' : '#c0c0c8',
+              background: showDemo
+                ? (isLight ? 'rgba(183,150,46,0.12)' : 'rgba(212,175,55,0.15)')
+                : (isLight ? '#ffffff' : '#14141a'),
+              border: `1px solid ${showDemo
+                ? (isLight ? '#b7962e' : 'rgba(212,175,55,0.5)')
+                : (isLight ? '#dee2e6' : '#2a2a36')}`,
+              color: showDemo
+                ? (isLight ? '#8a6e0c' : '#d4af37')
+                : (isLight ? '#495057' : '#c0c0c8'),
+              boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
             }}
           >
-            <Eye className="w-3.5 h-3.5" style={{ color: '#d4af37' }} />
+            <Eye className="w-3.5 h-3.5" style={{ color: isLight ? '#b7962e' : '#d4af37' }} />
             {showDemo ? 'Hide Demo' : 'Form Demo'}
           </button>
 
           <button
             onClick={() => setShowConfig((v) => !v)}
             className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all"
-            style={{ background: '#14141a', border: '1px solid #2a2a36', color: '#c0c0c8' }}
+            style={{
+              background: isLight ? '#ffffff' : '#14141a',
+              border: `1px solid ${isLight ? '#dee2e6' : '#2a2a36'}`,
+              color: isLight ? '#495057' : '#c0c0c8',
+              boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+            }}
           >
-            <Sliders className="w-3.5 h-3.5" style={{ color: '#d4af37' }} />
+            <Sliders className="w-3.5 h-3.5" style={{ color: isLight ? '#b7962e' : '#d4af37' }} />
             Configure
             {showConfig ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
@@ -197,27 +266,40 @@ export default function ShadowCoachApp() {
       {/* ── Config Panel ────────────────────────────────────────────────── */}
       {showConfig && (
         <section
-          className="px-6 py-6"
-          style={{ background: '#0f0f13', borderBottom: '1px solid rgba(212,175,55,0.12)' }}
+          className="px-6 py-6 transition-colors duration-200"
+          style={{
+            background: isLight ? '#ffffff' : '#0f0f13',
+            borderBottom: isLight ? '1px solid #e9ecef' : '1px solid rgba(212,175,55,0.12)',
+            boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.03)' : 'none',
+          }}
         >
           <div className="max-w-6xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-black uppercase tracking-wider flex items-center gap-2" style={{ color: '#d4af37' }}>
+                <h2 className="text-sm font-black uppercase tracking-wider flex items-center gap-2" style={{ color: isLight ? '#8a6e0c' : '#d4af37' }}>
                   <Dumbbell className="w-4 h-4" /> Combat Setup & Equipment Form
                 </h2>
-                <p className="text-xs text-stone-500 mt-0.5">
+                <p className="text-xs mt-0.5" style={{ color: isLight ? '#6c757d' : '#71717a' }}>
                   Configure your tier and gear — the AI tailors every round to your loadout.
                 </p>
               </div>
-              <button onClick={() => setShowConfig(false)} className="text-xs text-stone-500 hover:text-white px-2 py-1 rounded-md transition">
+              <button
+                onClick={() => setShowConfig(false)}
+                className="text-xs px-2.5 py-1 rounded-md transition"
+                style={{ color: isLight ? '#495057' : '#a1a1aa' }}
+              >
                 Done
               </button>
             </div>
 
             {/* Tier Selection */}
             <div>
-              <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-2">Fighter Tier</label>
+              <label
+                className="text-[10px] font-black uppercase tracking-widest block mb-2"
+                style={{ color: isLight ? '#6c757d' : '#71717a' }}
+              >
+                Fighter Tier
+              </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {FITNESS_TIERS.map((tier) => (
                   <button
@@ -225,15 +307,23 @@ export default function ShadowCoachApp() {
                     onClick={() => setUserLevel(tier.id)}
                     className="p-3.5 rounded-xl text-left transition-all relative overflow-hidden"
                     style={{
-                      background: userLevel === tier.id ? 'rgba(212,175,55,0.08)' : '#0f0f13',
-                      border: `1px solid ${userLevel === tier.id ? 'rgba(212,175,55,0.5)' : '#2a2a36'}`,
+                      background: userLevel === tier.id
+                        ? (isLight ? 'rgba(212,175,55,0.12)' : 'rgba(212,175,55,0.08)')
+                        : (isLight ? '#f8f9fa' : '#0f0f13'),
+                      border: `1px solid ${userLevel === tier.id
+                        ? (isLight ? '#b7962e' : 'rgba(212,175,55,0.5)')
+                        : (isLight ? '#e9ecef' : '#2a2a36')}`,
                     }}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-black text-sm text-white">{tier.label}</span>
-                      {userLevel === tier.id && <CheckCircle2 className="w-4 h-4" style={{ color: '#d4af37' }} />}
+                      <span className="font-black text-sm" style={{ color: isLight ? '#1e2022' : '#ffffff' }}>
+                        {tier.label}
+                      </span>
+                      {userLevel === tier.id && <CheckCircle2 className="w-4 h-4" style={{ color: isLight ? '#b7962e' : '#d4af37' }} />}
                     </div>
-                    <p className="text-[11px] text-stone-500 leading-snug">{tier.desc}</p>
+                    <p className="text-[11px] leading-snug" style={{ color: isLight ? '#6c757d' : '#71717a' }}>
+                      {tier.desc}
+                    </p>
                     {userLevel === tier.id && (
                       <div className="absolute bottom-0 left-0 h-0.5 w-full" style={{ background: 'linear-gradient(90deg, #d4af37, #f59e0b)' }} />
                     )}
@@ -244,7 +334,12 @@ export default function ShadowCoachApp() {
 
             {/* Equipment */}
             <div>
-              <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-2">Available Gear</label>
+              <label
+                className="text-[10px] font-black uppercase tracking-widest block mb-2"
+                style={{ color: isLight ? '#6c757d' : '#71717a' }}
+              >
+                Available Gear
+              </label>
               <div className="flex flex-wrap gap-2">
                 {EQUIPMENT_OPTIONS.map((item) => {
                   const on = selectedEquipment.includes(item.id);
@@ -254,9 +349,11 @@ export default function ShadowCoachApp() {
                       onClick={() => toggleEquipment(item.id)}
                       className="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all"
                       style={{
-                        background: on ? 'rgba(212,175,55,0.15)' : '#0f0f13',
-                        border: `1px solid ${on ? '#d4af37' : '#2a2a36'}`,
-                        color: on ? '#d4af37' : '#8a8a9a',
+                        background: on
+                          ? (isLight ? 'rgba(183,150,46,0.14)' : 'rgba(212,175,55,0.15)')
+                          : (isLight ? '#f1f3f5' : '#0f0f13'),
+                        border: `1px solid ${on ? (isLight ? '#b7962e' : '#d4af37') : (isLight ? '#dee2e6' : '#2a2a36')}`,
+                        color: on ? (isLight ? '#8a6e0c' : '#d4af37') : (isLight ? '#495057' : '#8a8a9a'),
                       }}
                     >
                       {item.label}
@@ -283,21 +380,35 @@ export default function ShadowCoachApp() {
 
         {/* Left: Routine Detail */}
         <div
-          className="p-6 rounded-2xl lg:col-span-2 space-y-5"
-          style={{ background: '#0f0f13', border: '1px solid rgba(212,175,55,0.12)' }}
+          className="p-6 rounded-2xl lg:col-span-2 space-y-5 transition-colors duration-200"
+          style={{
+            background: isLight ? '#ffffff' : '#0f0f13',
+            border: `1px solid ${isLight ? '#dee2e6' : 'rgba(212,175,55,0.12)'}`,
+            boxShadow: isLight ? '0 4px 20px rgba(0,0,0,0.04)' : 'none',
+          }}
         >
           {/* Title */}
           <div>
             <span
               className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-md"
-              style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: '#d4af37' }}
+              style={{
+                background: isLight ? 'rgba(183,150,46,0.1)' : 'rgba(212,175,55,0.08)',
+                border: `1px solid ${isLight ? 'rgba(183,150,46,0.3)' : 'rgba(212,175,55,0.2)'}`,
+                color: isLight ? '#8a6e0c' : '#d4af37',
+              }}
             >
               {userLevel} · {selectedEquipment.join(', ')}
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight mt-3 text-white">
+            <h1
+              className="text-2xl sm:text-3xl font-black tracking-tight mt-3"
+              style={{ color: isLight ? '#111215' : '#ffffff' }}
+            >
               {activeRoutine?.routineName || 'Drill Track 01: Shadow & Squat Fusion'}
             </h1>
-            <p className="text-sm text-stone-500 mt-1">
+            <p
+              className="text-sm mt-1"
+              style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}
+            >
               {activeRoutine
                 ? 'Custom AI routine loaded. Engage the camera to ignite your circuit.'
                 : 'Targeting standard biomechanic extensions mixed with functional leg drive.'}
@@ -313,7 +424,13 @@ export default function ShadowCoachApp() {
 
           {/* Loading Skeleton */}
           {isLoading && (
-            <div className="p-6 rounded-2xl text-center space-y-4" style={{ border: '1px solid rgba(212,175,55,0.2)', background: 'rgba(212,175,55,0.03)' }}>
+            <div
+              className="p-6 rounded-2xl text-center space-y-4"
+              style={{
+                border: `1px solid ${isLight ? '#e9ecef' : 'rgba(212,175,55,0.2)'}`,
+                background: isLight ? '#f8f9fa' : 'rgba(212,175,55,0.03)',
+              }}
+            >
               <div
                 className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
                 style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)' }}
@@ -321,8 +438,12 @@ export default function ShadowCoachApp() {
                 <RefreshCw className="w-7 h-7 animate-spin" style={{ color: '#d4af37' }} />
               </div>
               <div>
-                <h3 className="font-black text-white text-base">AI Coach Architecting Your Routine</h3>
-                <p className="text-xs text-stone-500 mt-1">Synthesising combat rounds, biometric cues & duration pacing…</p>
+                <h3 className="font-black text-base" style={{ color: isLight ? '#111215' : '#ffffff' }}>
+                  AI Coach Architecting Your Routine
+                </h3>
+                <p className="text-xs mt-1" style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}>
+                  Synthesising combat rounds, biometric cues & duration pacing…
+                </p>
               </div>
               <div className="space-y-2 max-w-md mx-auto">
                 {[1,2,3].map((i) => (
@@ -337,20 +458,30 @@ export default function ShadowCoachApp() {
             <div className="space-y-3">
               {/* Active */}
               <div
-                className="p-4 rounded-xl relative overflow-hidden"
-                style={{ background: 'rgba(212,175,55,0.04)', borderLeft: '3px solid #d4af37', borderTop: '1px solid rgba(212,175,55,0.15)', borderRight: '1px solid rgba(212,175,55,0.08)', borderBottom: '1px solid rgba(212,175,55,0.08)' }}
+                className="p-4 rounded-xl relative overflow-hidden transition-colors"
+                style={{
+                  background: isLight ? '#fefcf6' : 'rgba(212,175,55,0.04)',
+                  borderLeft: `3px solid ${isLight ? '#b7962e' : '#d4af37'}`,
+                  borderTop: `1px solid ${isLight ? '#f1ebd8' : 'rgba(212,175,55,0.15)'}`,
+                  borderRight: `1px solid ${isLight ? '#f1ebd8' : 'rgba(212,175,55,0.08)'}`,
+                  borderBottom: `1px solid ${isLight ? '#f1ebd8' : 'rgba(212,175,55,0.08)'}`,
+                }}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <Target className="w-3.5 h-3.5" style={{ color: '#d4af37' }} />
-                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#d4af37' }}>
+                    <Target className="w-3.5 h-3.5" style={{ color: isLight ? '#b7962e' : '#d4af37' }} />
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: isLight ? '#8a6e0c' : '#d4af37' }}
+                    >
                       Active Objective{activeRoutine ? ` — Round ${currentRoundIndex + 1}` : ''}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setShowDemo((prev) => !prev)}
-                      className="text-[10px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 transition"
+                      className="text-[10px] font-bold flex items-center gap-1 transition"
+                      style={{ color: isLight ? '#b7962e' : '#fbbf24' }}
                     >
                       <Eye className="w-3 h-3" />
                       {showDemo ? 'Close Demo' : 'View Form Demo'}
@@ -358,10 +489,16 @@ export default function ShadowCoachApp() {
                     {activeRound?.trackingType && <TrackingBadge type={activeRound.trackingType} />}
                   </div>
                 </div>
-                <h3 className="font-black text-white text-base">
+                <h3
+                  className="font-black text-base"
+                  style={{ color: isLight ? '#111215' : '#ffffff' }}
+                >
                   {activeRound?.name || 'Straight Left Jab & Stance Guard'}
                 </h3>
-                <p className="text-xs text-stone-500 mt-1 leading-relaxed">
+                <p
+                  className="text-xs mt-1 leading-relaxed"
+                  style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}
+                >
                   {activeRound?.coachingCue || 'Extend your arm fully and keep your trailing hand protecting your chin.'}
                 </p>
               </div>
@@ -379,25 +516,46 @@ export default function ShadowCoachApp() {
               {/* Next / Last Round */}
               {nextRound ? (
                 <div
-                  className="p-4 rounded-xl opacity-65"
-                  style={{ background: '#0f0f13', borderLeft: '3px solid #2a2a36', border: '1px solid #1a1a22' }}
+                  className="p-4 rounded-xl opacity-80 transition-colors"
+                  style={{
+                    background: isLight ? '#f8f9fa' : '#0f0f13',
+                    borderLeft: `3px solid ${isLight ? '#ced4da' : '#2a2a36'}`,
+                    border: `1px solid ${isLight ? '#dee2e6' : '#1a1a22'}`,
+                  }}
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-stone-500" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-stone-500">
+                      <Clock className="w-3.5 h-3.5" style={{ color: isLight ? '#6c757d' : '#71717a' }} />
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: isLight ? '#6c757d' : '#71717a' }}
+                      >
                         Next Up — Round {currentRoundIndex + 2}
                       </span>
                     </div>
                     {nextRound.trackingType && <TrackingBadge type={nextRound.trackingType} />}
                   </div>
-                  <h3 className="font-bold text-stone-300 text-base">{nextRound.name}</h3>
-                  <p className="text-xs text-stone-600 mt-1">{nextRound.coachingCue}</p>
+                  <h3
+                    className="font-bold text-base"
+                    style={{ color: isLight ? '#343a40' : '#d4d4d8' }}
+                  >
+                    {nextRound.name}
+                  </h3>
+                  <p
+                    className="text-xs mt-1"
+                    style={{ color: isLight ? '#6c757d' : '#71717a' }}
+                  >
+                    {nextRound.coachingCue}
+                  </p>
                 </div>
               ) : activeRoutine ? (
                 <div
                   className="p-4 rounded-xl"
-                  style={{ background: 'rgba(212,175,55,0.04)', borderLeft: '3px solid rgba(212,175,55,0.4)', border: '1px solid rgba(212,175,55,0.1)' }}
+                  style={{
+                    background: isLight ? '#fffdf5' : 'rgba(212,175,55,0.04)',
+                    borderLeft: '3px solid rgba(212,175,55,0.5)',
+                    border: `1px solid ${isLight ? '#f3eedb' : 'rgba(212,175,55,0.1)'}`,
+                  }}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Zap className="w-3.5 h-3.5" style={{ color: '#f59e0b' }} />
@@ -405,15 +563,23 @@ export default function ShadowCoachApp() {
                       Championship Round
                     </span>
                   </div>
-                  <p className="text-xs text-stone-400">Final drill. Push intensity — every second counts!</p>
+                  <p className="text-xs" style={{ color: isLight ? '#495057' : '#a1a1aa' }}>
+                    Final drill. Push intensity — every second counts!
+                  </p>
                 </div>
               ) : (
                 <div
-                  className="p-4 rounded-xl opacity-40"
-                  style={{ background: '#0f0f13', borderLeft: '3px solid #2a2a36', border: '1px solid #1a1a22' }}
+                  className="p-4 rounded-xl opacity-60"
+                  style={{
+                    background: isLight ? '#f8f9fa' : '#0f0f13',
+                    borderLeft: `3px solid ${isLight ? '#ced4da' : '#2a2a36'}`,
+                    border: `1px solid ${isLight ? '#dee2e6' : '#1a1a22'}`,
+                  }}
                 >
-                  <h3 className="font-bold text-stone-400 text-base">Next Up: Alternating Sprawl / Burpees</h3>
-                  <p className="text-xs text-stone-600 mt-0.5">
+                  <h3 className="font-bold text-base" style={{ color: isLight ? '#495057' : '#a1a1aa' }}>
+                    Next Up: Alternating Sprawl / Burpees
+                  </h3>
+                  <p className="text-xs mt-0.5" style={{ color: isLight ? '#6c757d' : '#71717a' }}>
                     Rapid body descent to floor level — drops center of mass and forces explosive recovery.
                   </p>
                 </div>
@@ -423,10 +589,21 @@ export default function ShadowCoachApp() {
 
           {/* Round Hierarchy / Timeline */}
           {activeRoutine?.rounds?.length > 0 && !isLoading && (
-            <div className="rounded-xl p-4" style={{ background: '#09090c', border: '1px solid #1a1a22' }}>
+            <div
+              className="rounded-xl p-4 transition-colors"
+              style={{
+                background: isLight ? '#f8f9fa' : '#09090c',
+                border: `1px solid ${isLight ? '#dee2e6' : '#1a1a22'}`,
+              }}
+            >
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-stone-500">Protocol Round Hierarchy</h4>
-                <span className="text-[10px] font-mono" style={{ color: '#d4af37' }}>
+                <h4
+                  className="text-[10px] font-black uppercase tracking-widest"
+                  style={{ color: isLight ? '#6c757d' : '#71717a' }}
+                >
+                  Protocol Round Hierarchy
+                </h4>
+                <span className="text-[10px] font-mono font-bold" style={{ color: isLight ? '#8a6e0c' : '#d4af37' }}>
                   {currentRoundIndex + 1} / {activeRoutine.rounds.length}
                 </span>
               </div>
@@ -440,26 +617,36 @@ export default function ShadowCoachApp() {
                       key={round.id ?? idx}
                       className="flex items-center justify-between p-2.5 rounded-lg text-xs transition-all"
                       style={{
-                        background: isCurrent ? 'rgba(212,175,55,0.07)' : isPast ? 'transparent' : '#0f0f13',
-                        border:     isCurrent ? '1px solid rgba(212,175,55,0.35)' : '1px solid #1a1a22',
-                        opacity: isPast ? 0.4 : 1,
+                        background: isCurrent
+                          ? (isLight ? 'rgba(212,175,55,0.12)' : 'rgba(212,175,55,0.07)')
+                          : isPast
+                          ? 'transparent'
+                          : (isLight ? '#ffffff' : '#0f0f13'),
+                        border: isCurrent
+                          ? (isLight ? '1px solid #b7962e' : '1px solid rgba(212,175,55,0.35)')
+                          : `1px solid ${isLight ? '#e9ecef' : '#1a1a22'}`,
+                        opacity: isPast ? 0.45 : 1,
                       }}
                     >
                       <div className="flex items-center gap-2.5">
                         <span
                           className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black flex-shrink-0"
                           style={{
-                            background: isCurrent ? '#d4af37' : isPast ? 'rgba(212,175,55,0.1)' : '#1a1a22',
-                            color:      isCurrent ? '#000' : isPast ? '#d4af37' : '#5a5a6a',
+                            background: isCurrent ? '#d4af37' : isPast ? 'rgba(212,175,55,0.15)' : (isLight ? '#e9ecef' : '#1a1a22'),
+                            color:      isCurrent ? '#000' : isPast ? (isLight ? '#8a6e0c' : '#d4af37') : (isLight ? '#6c757d' : '#5a5a6a'),
                           }}
                         >
                           {isPast ? '✓' : idx + 1}
                         </span>
-                        <span className={isPast ? 'line-through text-stone-600' : 'text-stone-300'}>{round.name}</span>
+                        <span
+                          className={isPast ? 'line-through text-stone-400' : (isLight ? 'text-stone-800 font-medium' : 'text-stone-300')}
+                        >
+                          {round.name}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono" style={{ color: tb.color }}>{tb.label}</span>
-                        <span className="text-[10px] font-mono text-stone-600">{round.durationSeconds}s</span>
+                        <span className="text-[10px] font-mono font-bold" style={{ color: tb.color }}>{tb.label}</span>
+                        <span className="text-[10px] font-mono" style={{ color: isLight ? '#6c757d' : '#71717a' }}>{round.durationSeconds}s</span>
                       </div>
                     </div>
                   );
@@ -470,18 +657,29 @@ export default function ShadowCoachApp() {
 
           {/* Coach Tip */}
           <div
-            className="p-4 rounded-xl flex items-start gap-3"
-            style={{ background: '#09090c', border: '1px solid #1a1a22' }}
+            className="p-4 rounded-xl flex items-start gap-3 transition-colors"
+            style={{
+              background: isLight ? '#fdfdfd' : '#09090c',
+              border: `1px solid ${isLight ? '#e9ecef' : '#1a1a22'}`,
+            }}
           >
             <div
               className="p-2 rounded-lg flex-shrink-0"
-              style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
+              style={{
+                background: isLight ? 'rgba(212,175,55,0.12)' : 'rgba(212,175,55,0.08)',
+                border: `1px solid ${isLight ? 'rgba(183,150,46,0.3)' : 'rgba(212,175,55,0.2)'}`,
+              }}
             >
-              <Award className="w-5 h-5" style={{ color: '#d4af37' }} />
+              <Award className="w-5 h-5" style={{ color: isLight ? '#8a6e0c' : '#d4af37' }} />
             </div>
             <div>
-              <h4 className="text-sm font-black text-white">Pro Combat Biomechanics Cue</h4>
-              <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
+              <h4 className="text-sm font-black" style={{ color: isLight ? '#111215' : '#ffffff' }}>
+                Pro Combat Biomechanics Cue
+              </h4>
+              <p
+                className="text-xs mt-0.5 leading-relaxed"
+                style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}
+              >
                 Ensure your camera captures from crown to ankles. Rotate your hips on straight punches
                 and lower your centre of gravity under incoming strikes. Distance = accuracy.
               </p>

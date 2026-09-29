@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Play, Pause, RotateCcw, Info, Sparkles } from 'lucide-react';
+import { useCoachStore } from '@/lib/store/useCoachStore';
 
 /**
  * Exercise demonstration definitions.
@@ -247,6 +248,8 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
   const [currentType, setCurrentType] = useState(trackingType || 'punch');
   const [currentPhase, setCurrentPhase] = useState('');
   const [speedMultiplier, setSpeedMultiplier] = useState(1.0);
+  const theme = useCoachStore((s) => s.theme);
+  const isLight = theme === 'light';
 
   // Sync prop changes
   useEffect(() => {
@@ -278,7 +281,7 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
       const width = canvas.width;
       const height = canvas.height;
 
-      // Clear with dark subtle gradient backdrop
+      // Clear
       ctx.clearRect(0, 0, width, height);
 
       // Floor grid / shadow zone
@@ -286,8 +289,8 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
         width * 0.5, height * 0.90, 10,
         width * 0.5, height * 0.90, width * 0.4
       );
-      gradient.addColorStop(0, 'rgba(212, 175, 55, 0.15)');
-      gradient.addColorStop(0.5, 'rgba(212, 175, 55, 0.04)');
+      gradient.addColorStop(0, 'rgba(212, 175, 55, 0.18)');
+      gradient.addColorStop(0.5, 'rgba(212, 175, 55, 0.05)');
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       ctx.save();
@@ -297,7 +300,7 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
       ctx.fill();
 
       // Centerline alignment guide
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
+      ctx.strokeStyle = isLight ? 'rgba(183, 150, 46, 0.25)' : 'rgba(212, 175, 55, 0.12)';
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
@@ -341,7 +344,7 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
       ctx.lineJoin = 'round';
 
       // Soft glow pass
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
       ctx.lineWidth = 8;
       ctx.shadowColor = '#D4AF37';
       ctx.shadowBlur = 14;
@@ -375,7 +378,6 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
 
       // Head rendering
       ctx.save();
-      // Outer aura
       ctx.beginPath();
       ctx.arc(head.x, head.y, 14, 0, Math.PI * 2);
       ctx.fillStyle = '#09090C';
@@ -431,17 +433,19 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
       isRunning = false;
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [activeDemo, isPlaying, speedMultiplier]);
+  }, [activeDemo, isPlaying, speedMultiplier, isLight]);
 
   const handleRestart = () => {
     startTimeRef.current = performance.now();
   };
 
   return (
-    <div className="rounded-2xl p-5 border text-white transition-all shadow-2xl relative overflow-hidden"
+    <div
+      className="rounded-2xl p-5 border transition-all shadow-2xl relative overflow-hidden"
       style={{
-        background: 'linear-gradient(145deg, #0e0e12, #14141a)',
-        borderColor: 'rgba(212,175,55,0.22)',
+        background: isLight ? '#ffffff' : 'linear-gradient(145deg, #0e0e12, #14141a)',
+        borderColor: isLight ? '#dee2e6' : 'rgba(212,175,55,0.22)',
+        color: isLight ? '#1e2022' : '#ffffff',
       }}
     >
       {/* Decorative Gold Header Aura */}
@@ -455,34 +459,46 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
         <div className="flex items-center gap-2.5">
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)' }}
+            style={{
+              background: isLight ? 'rgba(183,150,46,0.12)' : 'rgba(212,175,55,0.12)',
+              border: `1px solid ${isLight ? 'rgba(183,150,46,0.3)' : 'rgba(212,175,55,0.3)'}`,
+            }}
           >
-            <Sparkles className="w-4 h-4" style={{ color: '#d4af37' }} />
+            <Sparkles className="w-4 h-4" style={{ color: isLight ? '#8a6e0c' : '#d4af37' }} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-black uppercase tracking-wider text-white">
+              <h3
+                className="text-sm font-black uppercase tracking-wider"
+                style={{ color: isLight ? '#111215' : '#ffffff' }}
+              >
                 Biomechanical Form Demo
               </h3>
               <span
                 className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full border font-bold"
                 style={{
-                  color: '#d4af37',
-                  borderColor: 'rgba(212,175,55,0.4)',
-                  background: 'rgba(212,175,55,0.08)',
+                  color: isLight ? '#8a6e0c' : '#d4af37',
+                  borderColor: isLight ? 'rgba(183,150,46,0.4)' : 'rgba(212,175,55,0.4)',
+                  background: isLight ? 'rgba(183,150,46,0.08)' : 'rgba(212,175,55,0.08)',
                 }}
               >
                 {activeDemo.badge}
               </span>
             </div>
-            <p className="text-[11px] text-stone-400">
+            <p className="text-[11px]" style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}>
               Interactive kinetic guidance for championship precision
             </p>
           </div>
         </div>
 
         {/* Tab Switcher for all 4 movements */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#09090c] border border-[#2a2a36]">
+        <div
+          className="flex items-center gap-1.5 p-1 rounded-xl border"
+          style={{
+            background: isLight ? '#f1f3f5' : '#09090c',
+            borderColor: isLight ? '#dee2e6' : '#2a2a36',
+          }}
+        >
           {Object.keys(EXERCISE_DEMOS).map((key) => {
             const isSelected = currentType === key;
             return (
@@ -492,7 +508,7 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
                 className="px-2.5 py-1 text-[10px] font-black uppercase rounded-lg transition-all"
                 style={{
                   background: isSelected ? 'linear-gradient(135deg, #b7962e, #f59e0b)' : 'transparent',
-                  color: isSelected ? '#000' : '#888899',
+                  color: isSelected ? '#000' : (isLight ? '#495057' : '#888899'),
                 }}
               >
                 {key}
@@ -507,9 +523,9 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
         {/* Visualizer Canvas Area */}
         <div className="md:col-span-6 flex flex-col items-center">
           <div
-            className="relative w-full max-w-[280px] aspect-[3/4] rounded-xl overflow-hidden bg-black/80 flex items-center justify-center"
+            className="relative w-full max-w-[280px] aspect-[3/4] rounded-xl overflow-hidden bg-black/90 flex items-center justify-center"
             style={{
-              border: '1.5px solid rgba(212,175,55,0.3)',
+              border: `1.5px solid ${isLight ? 'rgba(183,150,46,0.4)' : 'rgba(212,175,55,0.3)'}`,
               boxShadow: 'inset 0 0 30px rgba(0,0,0,0.9), 0 0 20px rgba(212,175,55,0.08)',
             }}
           >
@@ -517,8 +533,8 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
             <div
               className="absolute top-2.5 left-2.5 right-2.5 text-center text-[10px] font-mono font-black uppercase px-2 py-1 rounded-md tracking-wider backdrop-blur-md"
               style={{
-                background: 'rgba(9,9,12,0.75)',
-                border: '1px solid rgba(212,175,55,0.25)',
+                background: 'rgba(9,9,12,0.85)',
+                border: '1px solid rgba(212,175,55,0.3)',
                 color: '#fde68a',
               }}
             >
@@ -544,15 +560,25 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setIsPlaying((p) => !p)}
-                className="p-1.5 rounded-lg bg-[#1a1a22] hover:bg-[#252530] text-stone-200 border border-[#2a2a36] transition"
+                className="p-1.5 rounded-lg border transition"
+                style={{
+                  background: isLight ? '#f1f3f5' : '#1a1a22',
+                  borderColor: isLight ? '#dee2e6' : '#2a2a36',
+                  color: isLight ? '#343a40' : '#e4e4e7',
+                }}
                 title={isPlaying ? 'Pause animation' : 'Play animation'}
                 aria-label={isPlaying ? 'Pause animation' : 'Play animation'}
               >
-                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-amber-400" />}
+                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-amber-500" />}
               </button>
               <button
                 onClick={handleRestart}
-                className="p-1.5 rounded-lg bg-[#1a1a22] hover:bg-[#252530] text-stone-200 border border-[#2a2a36] transition"
+                className="p-1.5 rounded-lg border transition"
+                style={{
+                  background: isLight ? '#f1f3f5' : '#1a1a22',
+                  borderColor: isLight ? '#dee2e6' : '#2a2a36',
+                  color: isLight ? '#343a40' : '#e4e4e7',
+                }}
                 title="Restart movement loop"
                 aria-label="Restart movement loop"
               >
@@ -562,16 +588,16 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
 
             {/* Speed Selector */}
             <div className="flex items-center gap-1 text-[10px] font-mono">
-              <span className="text-stone-500 mr-1">Speed:</span>
+              <span className="mr-1" style={{ color: isLight ? '#6c757d' : '#71717a' }}>Speed:</span>
               {[0.5, 1.0, 1.5].map((spd) => (
                 <button
                   key={spd}
                   onClick={() => setSpeedMultiplier(spd)}
                   className="px-1.5 py-0.5 rounded border text-[9px] font-bold transition"
                   style={{
-                    borderColor: speedMultiplier === spd ? '#d4af37' : '#2a2a36',
-                    background: speedMultiplier === spd ? 'rgba(212,175,55,0.15)' : '#09090c',
-                    color: speedMultiplier === spd ? '#d4af37' : '#777788',
+                    borderColor: speedMultiplier === spd ? '#d4af37' : (isLight ? '#dee2e6' : '#2a2a36'),
+                    background: speedMultiplier === spd ? 'rgba(212,175,55,0.15)' : (isLight ? '#ffffff' : '#09090c'),
+                    color: speedMultiplier === spd ? (isLight ? '#8a6e0c' : '#d4af37') : (isLight ? '#6c757d' : '#777788'),
                   }}
                 >
                   {spd}x
@@ -584,38 +610,67 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
         {/* Form Breakdown & Coaching Keys */}
         <div className="md:col-span-6 space-y-3.5">
           <div>
-            <h4 className="text-base font-black text-white flex items-center gap-2">
+            <h4
+              className="text-base font-black flex items-center gap-2"
+              style={{ color: isLight ? '#111215' : '#ffffff' }}
+            >
               {activeDemo.title}
             </h4>
-            <p className="text-xs text-amber-400/90 mt-1 font-medium leading-relaxed italic">
+            <p
+              className="text-xs mt-1 font-medium leading-relaxed italic"
+              style={{ color: isLight ? '#b7962e' : '#fbbf24' }}
+            >
               &ldquo;{activeDemo.cue}&rdquo;
             </p>
           </div>
 
           {/* Primary target muscles */}
-          <div className="p-2.5 rounded-xl bg-[#09090c] border border-[#2a2a36]">
-            <div className="text-[10px] font-black uppercase tracking-wider text-stone-500 mb-0.5">
+          <div
+            className="p-2.5 rounded-xl border"
+            style={{
+              background: isLight ? '#f8f9fa' : '#09090c',
+              borderColor: isLight ? '#e9ecef' : '#2a2a36',
+            }}
+          >
+            <div
+              className="text-[10px] font-black uppercase tracking-wider mb-0.5"
+              style={{ color: isLight ? '#6c757d' : '#71717a' }}
+            >
               Target Kinetic Group
             </div>
-            <div className="text-xs font-semibold text-stone-300">
+            <div
+              className="text-xs font-semibold"
+              style={{ color: isLight ? '#212529' : '#d4d4d8' }}
+            >
               {activeDemo.targetMuscles}
             </div>
           </div>
 
           {/* Golden Rules / Checklist */}
           <div className="space-y-2">
-            <div className="text-[10px] font-black uppercase tracking-wider text-amber-500 flex items-center gap-1.5">
+            <div
+              className="text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5"
+              style={{ color: isLight ? '#8a6e0c' : '#f59e0b' }}
+            >
               <Info className="w-3 h-3" /> AI Biometric Alignment Keys
             </div>
             <ul className="space-y-1.5">
               {activeDemo.formKeys.map((rule, idx) => (
                 <li
                   key={idx}
-                  className="text-xs text-stone-300 flex items-start gap-2 leading-snug p-1.5 rounded-lg bg-[#0e0e14] border border-[#1e1e28]"
+                  className="text-xs flex items-start gap-2 leading-snug p-1.5 rounded-lg border"
+                  style={{
+                    background: isLight ? '#fdfdfd' : '#0e0e14',
+                    borderColor: isLight ? '#e9ecef' : '#1e1e28',
+                    color: isLight ? '#343a40' : '#d4d4d8',
+                  }}
                 >
                   <span
                     className="w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-black mt-0.5"
-                    style={{ background: 'rgba(212,175,55,0.15)', color: '#d4af37' }}
+                    style={{
+                      background: isLight ? 'rgba(183,150,46,0.15)' : 'rgba(212,175,55,0.15)',
+                      color: isLight ? '#8a6e0c' : '#d4af37',
+                    }}
                   >
                     {idx + 1}
                   </span>
@@ -628,7 +683,12 @@ export default function WorkoutAnimationDemo({ trackingType = 'punch', onClose }
           {onClose && (
             <button
               onClick={onClose}
-              className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-stone-400 hover:text-white bg-[#14141a] hover:bg-[#1a1a24] border border-[#2a2a36] transition"
+              className="w-full mt-2 py-2 rounded-xl text-xs font-bold border transition"
+              style={{
+                background: isLight ? '#f1f3f5' : '#14141a',
+                borderColor: isLight ? '#dee2e6' : '#2a2a36',
+                color: isLight ? '#495057' : '#a1a1aa',
+              }}
             >
               Hide Demonstration
             </button>

@@ -40,6 +40,7 @@ export default function CoachCamera() {
     activeRoutine,
     currentRoundIndex,
     speak,
+    theme,
   } = useCoachStore();
 
   const [isCalibrated,  setIsCalibrated]  = useState(false);
@@ -187,24 +188,27 @@ export default function CoachCamera() {
     };
   }, [calculateAngle, evaluatePunchState, evaluateSquatForm, evaluateSlipDefense, speak]);
 
+  const isLight = theme === 'light';
   const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   // Stat card: dims if tracking type doesn't match current round
   const StatCard = ({ label, value, active, exact, accent }) => (
     <div
       className={`relative p-3 rounded-xl text-center transition-all duration-300 ${
-        exact  ? `${meta.bg} border-2 ${meta.border} ring-2 ${meta.ring} shadow-lg` :
-        active ? 'bg-[#14141a] border border-[#2a2a36]' :
-                 'bg-[#0f0f13] border border-[#1a1a22] opacity-30'
+        exact
+          ? (isLight ? 'bg-amber-50 border-2 border-amber-500/70 ring-2 ring-amber-400/30 shadow-md' : `${meta.bg} border-2 ${meta.border} ring-2 ${meta.ring} shadow-lg`)
+          : active
+          ? (isLight ? 'bg-stone-50 border border-stone-200' : 'bg-[#14141a] border border-[#2a2a36]')
+          : (isLight ? 'bg-stone-100/60 border border-stone-200 opacity-40' : 'bg-[#0f0f13] border border-[#1a1a22] opacity-30')
       }`}
     >
       {exact && (
-        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
       )}
       <p className="text-[10px] uppercase font-bold tracking-widest text-stone-500 mb-0.5">{label}</p>
       <p className={`text-2xl font-black font-mono ${accent}`}>{value}</p>
       {exact && (
-        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-500 block mt-0.5">
+        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-500 block mt-0.5">
           Active Target
         </span>
       )}
@@ -212,7 +216,14 @@ export default function CoachCamera() {
   );
 
   return (
-    <div className="bg-[#0f0f13] border border-[#2a2a36] p-5 rounded-2xl shadow-2xl text-white w-full">
+    <div
+      className="p-5 rounded-2xl shadow-2xl w-full transition-colors duration-200"
+      style={{
+        background: isLight ? '#ffffff' : '#0f0f13',
+        border: `1px solid ${isLight ? '#dee2e6' : '#2a2a36'}`,
+        color: isLight ? '#1e2022' : '#ffffff',
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-black tracking-tight flex items-center gap-2 uppercase">
@@ -261,16 +272,25 @@ export default function CoachCamera() {
       </div>
 
       {/* Timer HUD */}
-      <div className="mt-4 p-4 bg-[#09090c] border border-[#2a2a36] rounded-xl space-y-2.5">
+      <div
+        className="mt-4 p-4 rounded-xl space-y-2.5 transition-colors duration-200"
+        style={{
+          background: isLight ? '#f8f9fa' : '#09090c',
+          border: `1px solid ${isLight ? '#dee2e6' : '#2a2a36'}`,
+        }}
+      >
         <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider">
-          <span className="text-stone-500">
+          <span style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}>
             {totalRounds > 0 ? `Round ${currentRoundIndex + 1} / ${totalRounds}` : 'Free Practice'}
           </span>
-          <span className="text-amber-500">{meta.label}</span>
+          <span style={{ color: isLight ? '#8a6e0c' : '#f59e0b' }}>{meta.label}</span>
         </div>
 
         {totalRounds > 0 && (
-          <div className="w-full h-1 rounded-full bg-[#1a1a22] overflow-hidden">
+          <div
+            className="w-full h-1 rounded-full overflow-hidden"
+            style={{ background: isLight ? '#e9ecef' : '#1a1a22' }}
+          >
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -281,19 +301,28 @@ export default function CoachCamera() {
           </div>
         )}
 
-        <p className="text-sm font-bold text-stone-200 truncate pt-0.5">
+        <p
+          className="text-sm font-bold truncate pt-0.5"
+          style={{ color: isLight ? '#111215' : '#e4e4e7' }}
+        >
           {activeRound?.name || 'No Protocol Loaded'}
         </p>
 
         {activeRound?.coachingCue && (
-          <p className="text-[11px] text-stone-500 italic leading-snug line-clamp-2 px-1">
+          <p
+            className="text-[11px] italic leading-snug line-clamp-2 px-1"
+            style={{ color: isLight ? '#6c757d' : '#a1a1aa' }}
+          >
             &ldquo;{activeRound.coachingCue}&rdquo;
           </p>
         )}
 
         <p
           className="text-5xl font-black font-mono text-center tracking-tight"
-          style={{ color: '#d4af37', textShadow: '0 0 24px rgba(212,175,55,0.4)' }}
+          style={{
+            color: isLight ? '#b7962e' : '#d4af37',
+            textShadow: isLight ? '0 0 16px rgba(183,150,46,0.25)' : '0 0 24px rgba(212,175,55,0.4)',
+          }}
         >
           {fmt(timeLeft)}
         </p>
@@ -303,9 +332,14 @@ export default function CoachCamera() {
           className={`w-full py-3 rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] ${
             isTimerRunning
               ? 'bg-red-950/60 hover:bg-red-900/70 border border-red-800/50 text-red-300'
+              : isLight
+              ? 'border border-amber-600/40 text-amber-900 hover:border-amber-600 hover:text-amber-950'
               : 'border border-amber-700/50 text-amber-300 hover:border-amber-500 hover:text-amber-200'
           }`}
-          style={!isTimerRunning ? { background: 'linear-gradient(135deg, #1a1508, #261e0a)' } : {}}
+          style={!isTimerRunning ? {
+            background: isLight ? 'linear-gradient(135deg, #fef9e7, #fef3c7)' : 'linear-gradient(135deg, #1a1508, #261e0a)',
+            boxShadow: isLight ? '0 2px 8px rgba(183,150,46,0.15)' : 'none',
+          } : {}}
         >
           {isTimerRunning ? '⏸ Pause Circuit' : '⚡ Ignite Session'}
         </button>
@@ -318,28 +352,31 @@ export default function CoachCamera() {
           value={repCount}
           active={activeTrackingType === 'punch' || activeTrackingType === 'freestyle'}
           exact={activeTrackingType === 'punch'}
-          accent="text-amber-400"
+          accent={isLight ? 'text-amber-600' : 'text-amber-400'}
         />
         <StatCard
           label="Squats"
           value={squatCount}
           active={activeTrackingType === 'squat' || activeTrackingType === 'freestyle'}
           exact={activeTrackingType === 'squat'}
-          accent="text-yellow-300"
+          accent={isLight ? 'text-amber-700' : 'text-yellow-300'}
         />
         <StatCard
           label="Defended"
           value={slipCount}
           active={activeTrackingType === 'slip' || activeTrackingType === 'freestyle'}
           exact={activeTrackingType === 'slip'}
-          accent="text-amber-300"
+          accent={isLight ? 'text-amber-600' : 'text-amber-300'}
         />
       </div>
 
       {/* Live Audio Coach */}
       <div
-        className="mt-3 p-3.5 rounded-xl text-center relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #100e00, #1a1508)', border: '1px solid rgba(212,175,55,0.2)' }}
+        className="mt-3 p-3.5 rounded-xl text-center relative overflow-hidden transition-colors"
+        style={{
+          background: isLight ? 'linear-gradient(135deg, #fef9e7, #fffdfa)' : 'linear-gradient(135deg, #100e00, #1a1508)',
+          border: `1px solid ${isLight ? 'rgba(183,150,46,0.25)' : 'rgba(212,175,55,0.2)'}`,
+        }}
       >
         <div className="absolute top-2 right-2 flex gap-0.5 items-end h-3">
           {[1,2,3,2,1].map((h, i) => (
@@ -350,8 +387,16 @@ export default function CoachCamera() {
             />
           ))}
         </div>
-        <p className="text-amber-600 font-black uppercase tracking-widest text-[10px] mb-1">Live Audio Coach</p>
-        <p className="text-stone-200 text-xs font-medium min-h-[34px] flex items-center justify-center leading-snug">
+        <p
+          className="font-black uppercase tracking-widest text-[10px] mb-1"
+          style={{ color: isLight ? '#8a6e0c' : '#d97706' }}
+        >
+          Live Audio Coach
+        </p>
+        <p
+          className="text-xs font-medium min-h-[34px] flex items-center justify-center leading-snug"
+          style={{ color: isLight ? '#212529' : '#e4e4e7' }}
+        >
           {audioFeedback}
         </p>
       </div>

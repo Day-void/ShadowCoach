@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── ApexCombat.AI — Black & Gold Design System ────────────────────────── */
+/* ── ApexCombat.AI — Design System Tokens ────────────────────────── */
 :root {
   --gold-100: #fef9e7;
   --gold-300: #fde68a;
@@ -8,19 +8,41 @@
   --gold-500: #d4af37;
   --gold-600: #b7962e;
   --gold-700: #92760f;
-  --obsidian:   #09090c;
-  --obsidian-2: #0f0f13;
-  --obsidian-3: #14141a;
-  --obsidian-4: #1a1a22;
-  --obsidian-border: #2a2a36;
+
+  /* Dark Obsidian Default */
+  --bg-primary: #09090c;
+  --bg-card: #0f0f13;
+  --bg-subtle: #14141a;
+  --bg-muted: #1a1a22;
+  --border-primary: rgba(212, 175, 55, 0.12);
+  --border-subtle: #2a2a36;
+  --text-main: #f4f4f8;
+  --text-muted: #8e8e9a;
+  --text-header: #ffffff;
+  --header-bg: rgba(9, 9, 12, 0.92);
+}
+
+html.light {
+  /* Crisp Championship Porcelain & Championship Gold */
+  --bg-primary: #f8f9fa;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f3f5;
+  --bg-muted: #e9ecef;
+  --border-primary: rgba(183, 150, 46, 0.25);
+  --border-subtle: #dee2e6;
+  --text-main: #1e2022;
+  --text-muted: #6c757d;
+  --text-header: #111215;
+  --header-bg: rgba(255, 255, 255, 0.94);
 }
 
 html, body {
-  background-color: var(--obsidian);
-  color: #e5e5ef;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
   font-family: ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 ::selection {
