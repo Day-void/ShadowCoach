@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test tests/tracker-disconnect.test.mjs tests/biometrics.test.mjs tests/api-and-workflow.test.mjs tests/security.test.mjs"
+    "test": "node --test tests/tracker-disconnect.test.mjs tests/biometrics.test.mjs tests/api-and-workflow.test.mjs tests/security.test.mjs tests/security-hardened.test.mjs tests/cross-platform.test.mjs",
+    "test:security": "node --test tests/security.test.mjs tests/security-hardened.test.mjs",
+    "test:stress": "artillery run tests/stress/load-test.yml"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "0.10.22-rc.20250304",

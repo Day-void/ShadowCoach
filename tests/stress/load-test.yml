@@ -1,0 +1,97 @@
+# ShadowCoach Artillery Stress Test
+# Simulates 1000 concurrent users across multiple attack surfaces:
+#   Phase 1: Cold ramp  — 50 users/s for 30s (warm up server, CDN, Groq)
+#   Phase 2: Sustained  — 200 users/s for 60s (production traffic simulation)
+#   Phase 3: Spike      — 500 users/s for 20s (viral traffic spike)
+#   Phase 4: Flood      — 1000 users/s for 10s (worst-case hammering)
+#   Phase 5: Cool-down  — 50 users/s for 20s (graceful drain)
+#
+# Scenarios weighted to match real-world usage:
+#   60% — page load (GET /)
+#   30% — workout generation (POST /api/workout/generate)
+#   10% — model status check (GET /api/model-status)
+
+config:
+  target: "http://localhost:3000"
+  phases:
+    - name: "Cold Ramp (warm-up)"
+      duration: 30
+      arrivalRate: 50
+    - name: "Sustained Production Load"
+      duration: 60
+      arrivalRate: 200
+    - name: "Viral Spike"
+      duration: 20
+      arrivalRate: 500
+    - name: "Worst-Case Flood"
+      duration: 10
+      arrivalRate: 1000
+    - name: "Cool-down"
+      duration: 20
+      arrivalRate: 50
+  defaults:
+    headers:
+      User-Agent: "ShadowCoach-LoadTest/1.0"
+      Accept: "application/json, text/html"
+  plugins:
+    expect: {}
+  # SLA thresholds — test FAILS if these are breached
+  ensure:
+    p99: 3000      # 99th percentile must be under 3 seconds
+    p95: 1500      # 95th percentile under 1.5s
+    maxErrorRate: 5 # max 5% error rate
+
+scenarios:
+  # ─── Scenario 1: Page Load (60% weight) ────────────────────────────────────
+  - name: "Homepage Load"
+    weight: 60
+    flow:
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+            - hasHeader: "content-type"
+            - hasHeader: "x-content-type-options"
+            - hasHeader: "x-frame-options"
+
+  # ─── Scenario 2: Workout Generation — valid requests (25% weight) ──────────
+  - name: "Generate Workout (valid)"
+    weight: 25
+    flow:
+      - post:
+          url: "/api/workout/generate"
+          headers:
+            Content-Type: "application/json"
+          json:
+            userLevel: "{{ $randomString(['beginner', 'intermediate', 'advanced']) }}"
+            availableEquipment: ["bodyweight", "mat"]
+          expect:
+            - statusCode:
+                oneOf: [200, 429]  # 429 is expected under flood
+            - contentType: "application/json"
+
+  # ─── Scenario 3: Model Status Check (10% weight) ───────────────────────────
+  - name: "Model Status Poll"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/model-status"
+          expect:
+            - statusCode:
+                oneOf: [200, 503]
+
+  # ─── Scenario 4: Abuse / Security Probing (5% weight) ─────────────────────
+  - name: "Malformed Request Rejection"
+    weight: 5
+    flow:
+      - post:
+          url: "/api/workout/generate"
+          headers:
+            Content-Type: "application/json"
+          # Giant payload — should be rejected with 413
+          json:
+            userLevel: "beginner"
+            availableEquipment: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u"]
+          expect:
+            - statusCode:
+                oneOf: [400, 413, 429]

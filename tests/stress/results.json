@@ -1,0 +1,651 @@
+{
+  "aggregate": {
+    "period": 1790672210000,
+    "counters": {
+      "vusers.created_by_name.Homepage Load": 20718,
+      "vusers.created": 34500,
+      "http.requests": 34500,
+      "vusers.created_by_name.Generate Workout (valid)": 8608,
+      "vusers.created_by_name.Model Status Poll": 3471,
+      "vusers.created_by_name.Malformed Request Rejection": 1703,
+      "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 11043,
+      "errors.ERR_SOCKET_TIMEOUT": 18447,
+      "vusers.failed": 34500,
+      "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 5503,
+      "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 1901,
+      "plugins.metrics-by-endpoint./.errors.ECONNRESET": 253,
+      "errors.ECONNRESET": 398,
+      "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNRESET": 112,
+      "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 8987,
+      "errors.ECONNREFUSED": 14925,
+      "plugins.metrics-by-endpoint./api/model-status.errors.ECONNRESET": 33,
+      "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 4476,
+      "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 1462,
+      "plugins.metrics-by-endpoint./.errors.EADDRINUSE": 435,
+      "errors.EADDRINUSE": 730,
+      "plugins.metrics-by-endpoint./api/workout/generate.errors.EADDRINUSE": 220,
+      "plugins.metrics-by-endpoint./api/model-status.errors.EADDRINUSE": 75
+    },
+    "rates": {
+      "http.request_rate": 170
+    },
+    "firstCounterAt": 1790672017459,
+    "lastCounterAt": 1790672211987,
+    "firstMetricAt": 1790672017459,
+    "lastMetricAt": 1790672211987,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "period": "1790672010000",
+      "counters": {
+        "vusers.created_by_name.Homepage Load": 74,
+        "vusers.created": 125,
+        "http.requests": 125,
+        "vusers.created_by_name.Generate Workout (valid)": 38,
+        "vusers.created_by_name.Model Status Poll": 7,
+        "vusers.created_by_name.Malformed Request Rejection": 6
+      },
+      "rates": {
+        "http.request_rate": 53
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672017459,
+      "lastCounterAt": 1790672019991,
+      "firstMetricAt": 1790672017459,
+      "lastMetricAt": 1790672019991,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672020000",
+      "counters": {
+        "vusers.created_by_name.Generate Workout (valid)": 117,
+        "vusers.created": 500,
+        "http.requests": 500,
+        "vusers.created_by_name.Homepage Load": 315,
+        "vusers.created_by_name.Model Status Poll": 46,
+        "vusers.created_by_name.Malformed Request Rejection": 22,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 73,
+        "errors.ERR_SOCKET_TIMEOUT": 123,
+        "vusers.failed": 613,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 43,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 7,
+        "plugins.metrics-by-endpoint./.errors.ECONNRESET": 253,
+        "errors.ECONNRESET": 398,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNRESET": 112,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 56,
+        "errors.ECONNREFUSED": 92,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNRESET": 33,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 26,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 10
+      },
+      "rates": {
+        "http.request_rate": 50
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672020007,
+      "lastCounterAt": 1790672029987,
+      "firstMetricAt": 1790672020007,
+      "lastMetricAt": 1790672029987,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672030000",
+      "counters": {
+        "vusers.created_by_name.Model Status Poll": 47,
+        "vusers.created": 498,
+        "http.requests": 498,
+        "vusers.created_by_name.Homepage Load": 288,
+        "vusers.created_by_name.Generate Workout (valid)": 140,
+        "vusers.created_by_name.Malformed Request Rejection": 23,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 69,
+        "errors.ERR_SOCKET_TIMEOUT": 111,
+        "vusers.failed": 111,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 14,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 28
+      },
+      "rates": {
+        "http.request_rate": 50
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672030005,
+      "lastCounterAt": 1790672039974,
+      "firstMetricAt": 1790672030005,
+      "lastMetricAt": 1790672039974,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672040000",
+      "counters": {
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 44,
+        "errors.ERR_SOCKET_TIMEOUT": 500,
+        "vusers.failed": 500,
+        "vusers.created_by_name.Homepage Load": 518,
+        "vusers.created": 882,
+        "http.requests": 881,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 283,
+        "vusers.created_by_name.Generate Workout (valid)": 218,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 173,
+        "vusers.created_by_name.Malformed Request Rejection": 45,
+        "vusers.created_by_name.Model Status Poll": 101
+      },
+      "rates": {
+        "http.request_rate": 88
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672040022,
+      "lastCounterAt": 1790672049999,
+      "firstMetricAt": 1790672040022,
+      "lastMetricAt": 1790672049999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672050000",
+      "counters": {
+        "http.requests": 1991,
+        "vusers.created_by_name.Generate Workout (valid)": 459,
+        "vusers.created": 1991,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 716,
+        "errors.ERR_SOCKET_TIMEOUT": 1178,
+        "vusers.failed": 1512,
+        "vusers.created_by_name.Model Status Poll": 214,
+        "vusers.created_by_name.Homepage Load": 1205,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 324,
+        "vusers.created_by_name.Malformed Request Rejection": 113,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 138,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 201,
+        "errors.ECONNREFUSED": 334,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 93,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 40
+      },
+      "rates": {
+        "http.request_rate": 200
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672050001,
+      "lastCounterAt": 1790672059998,
+      "firstMetricAt": 1790672050001,
+      "lastMetricAt": 1790672059998,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672060000",
+      "counters": {
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 5,
+        "errors.ECONNREFUSED": 124,
+        "vusers.failed": 1727,
+        "vusers.created_by_name.Homepage Load": 1204,
+        "vusers.created": 2004,
+        "http.requests": 2004,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 85,
+        "vusers.created_by_name.Generate Workout (valid)": 506,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 162,
+        "errors.ERR_SOCKET_TIMEOUT": 1603,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 34,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 955,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 486,
+        "vusers.created_by_name.Model Status Poll": 196,
+        "vusers.created_by_name.Malformed Request Rejection": 98
+      },
+      "rates": {
+        "http.request_rate": 201
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672060001,
+      "lastCounterAt": 1790672069999,
+      "firstMetricAt": 1790672060001,
+      "lastMetricAt": 1790672069999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672070000",
+      "counters": {
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 183,
+        "errors.ERR_SOCKET_TIMEOUT": 1727,
+        "vusers.failed": 2677,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 518,
+        "vusers.created_by_name.Homepage Load": 1208,
+        "vusers.created": 1984,
+        "http.requests": 1983,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 1026,
+        "vusers.created_by_name.Generate Workout (valid)": 495,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 569,
+        "errors.ECONNREFUSED": 950,
+        "vusers.created_by_name.Model Status Poll": 206,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 278,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 103,
+        "vusers.created_by_name.Malformed Request Rejection": 75
+      },
+      "rates": {
+        "http.request_rate": 199
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672070005,
+      "lastCounterAt": 1790672079996,
+      "firstMetricAt": 1790672070005,
+      "lastMetricAt": 1790672079996,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672080000",
+      "counters": {
+        "http.requests": 2021,
+        "vusers.created_by_name.Generate Workout (valid)": 525,
+        "vusers.created": 2020,
+        "vusers.created_by_name.Homepage Load": 1200,
+        "vusers.created_by_name.Malformed Request Rejection": 96,
+        "vusers.created_by_name.Model Status Poll": 199,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 773,
+        "errors.ERR_SOCKET_TIMEOUT": 1255,
+        "vusers.failed": 2314,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 365,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 117,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 623,
+        "errors.ECONNREFUSED": 1059,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 324,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 112
+      },
+      "rates": {
+        "http.request_rate": 203
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672080006,
+      "lastCounterAt": 1790672089999,
+      "firstMetricAt": 1790672080006,
+      "lastMetricAt": 1790672089999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672090000",
+      "counters": {
+        "vusers.created_by_name.Generate Workout (valid)": 456,
+        "vusers.created": 1983,
+        "http.requests": 1981,
+        "vusers.created_by_name.Homepage Load": 1204,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 477,
+        "errors.ERR_SOCKET_TIMEOUT": 783,
+        "vusers.failed": 1151,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 235,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 211,
+        "errors.ECONNREFUSED": 368,
+        "vusers.created_by_name.Model Status Poll": 214,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 71,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 39,
+        "vusers.created_by_name.Malformed Request Rejection": 109,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 118
+      },
+      "rates": {
+        "http.request_rate": 199
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672090000,
+      "lastCounterAt": 1790672099999,
+      "firstMetricAt": 1790672090000,
+      "lastMetricAt": 1790672099999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672100000",
+      "counters": {
+        "http.requests": 2568,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 1042,
+        "errors.ERR_SOCKET_TIMEOUT": 1699,
+        "vusers.failed": 2963,
+        "vusers.created_by_name.Homepage Load": 1544,
+        "vusers.created": 2565,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 187,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 470,
+        "vusers.created_by_name.Malformed Request Rejection": 143,
+        "vusers.created_by_name.Generate Workout (valid)": 619,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 754,
+        "errors.ECONNREFUSED": 1264,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 383,
+        "vusers.created_by_name.Model Status Poll": 259,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 127
+      },
+      "rates": {
+        "http.request_rate": 258
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672100000,
+      "lastCounterAt": 1790672109990,
+      "firstMetricAt": 1790672100000,
+      "lastMetricAt": 1790672109990,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672110000",
+      "counters": {
+        "vusers.created_by_name.Homepage Load": 1864,
+        "vusers.created": 3124,
+        "http.requests": 3123,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 855,
+        "errors.ERR_SOCKET_TIMEOUT": 1417,
+        "vusers.failed": 3394,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 414,
+        "vusers.created_by_name.Model Status Poll": 301,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 148,
+        "vusers.created_by_name.Generate Workout (valid)": 808,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 1178,
+        "errors.ECONNREFUSED": 1977,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 616,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 183,
+        "vusers.created_by_name.Malformed Request Rejection": 151
+      },
+      "rates": {
+        "http.request_rate": 313
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672110001,
+      "lastCounterAt": 1790672119997,
+      "firstMetricAt": 1790672110001,
+      "lastMetricAt": 1790672119997,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672120000",
+      "counters": {
+        "vusers.created_by_name.Generate Workout (valid)": 903,
+        "vusers.created": 3710,
+        "http.requests": 3710,
+        "vusers.created_by_name.Homepage Load": 2251,
+        "vusers.created_by_name.Model Status Poll": 373,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 283,
+        "errors.ECONNREFUSED": 1010,
+        "vusers.failed": 2503,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 632,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 95,
+        "vusers.created_by_name.Malformed Request Rejection": 183,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 131,
+        "errors.ERR_SOCKET_TIMEOUT": 1493,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 905,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 457
+      },
+      "rates": {
+        "http.request_rate": 372
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672120000,
+      "lastCounterAt": 1790672129999,
+      "firstMetricAt": 1790672120000,
+      "lastMetricAt": 1790672129999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672130000",
+      "counters": {
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 1496,
+        "errors.ERR_SOCKET_TIMEOUT": 2561,
+        "vusers.failed": 3302,
+        "vusers.created_by_name.Generate Workout (valid)": 786,
+        "vusers.created": 3113,
+        "http.requests": 3114,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 781,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 284,
+        "vusers.created_by_name.Homepage Load": 1827,
+        "vusers.created_by_name.Model Status Poll": 334,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 218,
+        "errors.ECONNREFUSED": 740,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 437,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 85,
+        "vusers.created_by_name.Malformed Request Rejection": 166,
+        "plugins.metrics-by-endpoint./.errors.EADDRINUSE": 1,
+        "errors.EADDRINUSE": 1
+      },
+      "rates": {
+        "http.request_rate": 314
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672130000,
+      "lastCounterAt": 1790672139992,
+      "firstMetricAt": 1790672130000,
+      "lastMetricAt": 1790672139992,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672140000",
+      "counters": {
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 1100,
+        "errors.ERR_SOCKET_TIMEOUT": 1840,
+        "vusers.failed": 1847,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 553,
+        "vusers.created_by_name.Homepage Load": 572,
+        "vusers.created": 964,
+        "http.requests": 964,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 187,
+        "vusers.created_by_name.Generate Workout (valid)": 250,
+        "plugins.metrics-by-endpoint./.errors.EADDRINUSE": 6,
+        "errors.EADDRINUSE": 7,
+        "vusers.created_by_name.Model Status Poll": 94,
+        "vusers.created_by_name.Malformed Request Rejection": 48,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.EADDRINUSE": 1
+      },
+      "rates": {
+        "http.request_rate": 97
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672140006,
+      "lastCounterAt": 1790672149986,
+      "firstMetricAt": 1790672140006,
+      "lastMetricAt": 1790672149986,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672150000",
+      "counters": {
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 604,
+        "errors.ERR_SOCKET_TIMEOUT": 1029,
+        "vusers.failed": 1137,
+        "vusers.created_by_name.Generate Workout (valid)": 251,
+        "vusers.created": 1003,
+        "http.requests": 1003,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 103,
+        "vusers.created_by_name.Homepage Load": 591,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 322,
+        "vusers.created_by_name.Model Status Poll": 112,
+        "vusers.created_by_name.Malformed Request Rejection": 49,
+        "plugins.metrics-by-endpoint./.errors.EADDRINUSE": 66,
+        "errors.EADDRINUSE": 108,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.EADDRINUSE": 30,
+        "plugins.metrics-by-endpoint./api/model-status.errors.EADDRINUSE": 12
+      },
+      "rates": {
+        "http.request_rate": 102
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672150000,
+      "lastCounterAt": 1790672159998,
+      "firstMetricAt": 1790672150000,
+      "lastMetricAt": 1790672159998,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672160000",
+      "counters": {
+        "vusers.created_by_name.Homepage Load": 543,
+        "vusers.created": 919,
+        "http.requests": 919,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 462,
+        "errors.ERR_SOCKET_TIMEOUT": 780,
+        "vusers.failed": 1326,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 228,
+        "plugins.metrics-by-endpoint./.errors.EADDRINUSE": 315,
+        "errors.EADDRINUSE": 535,
+        "vusers.created_by_name.Model Status Poll": 98,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 90,
+        "vusers.created_by_name.Generate Workout (valid)": 237,
+        "plugins.metrics-by-endpoint./api/model-status.errors.EADDRINUSE": 57,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.EADDRINUSE": 163,
+        "vusers.created_by_name.Malformed Request Rejection": 41,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 2,
+        "errors.ECONNREFUSED": 11,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 4,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 5
+      },
+      "rates": {
+        "http.request_rate": 93
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672160004,
+      "lastCounterAt": 1790672169997,
+      "firstMetricAt": 1790672160004,
+      "lastMetricAt": 1790672169997,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672170000",
+      "counters": {
+        "plugins.metrics-by-endpoint./.errors.EADDRINUSE": 47,
+        "errors.EADDRINUSE": 79,
+        "vusers.failed": 2480,
+        "vusers.created_by_name.Homepage Load": 1320,
+        "vusers.created": 2183,
+        "http.requests": 2180,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.EADDRINUSE": 26,
+        "vusers.created_by_name.Generate Workout (valid)": 541,
+        "vusers.created_by_name.Model Status Poll": 215,
+        "plugins.metrics-by-endpoint./api/model-status.errors.EADDRINUSE": 6,
+        "vusers.created_by_name.Malformed Request Rejection": 107,
+        "plugins.metrics-by-endpoint./.errors.ERR_SOCKET_TIMEOUT": 207,
+        "errors.ERR_SOCKET_TIMEOUT": 348,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ERR_SOCKET_TIMEOUT": 106,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ERR_SOCKET_TIMEOUT": 35,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 1239,
+        "errors.ECONNREFUSED": 2053,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 205,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 609
+      },
+      "rates": {
+        "http.request_rate": 219
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672170003,
+      "lastCounterAt": 1790672179999,
+      "firstMetricAt": 1790672170003,
+      "lastMetricAt": 1790672179999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672180000",
+      "counters": {
+        "http.requests": 3524,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 2155,
+        "errors.ECONNREFUSED": 3524,
+        "vusers.failed": 3524,
+        "vusers.created_by_name.Generate Workout (valid)": 889,
+        "vusers.created": 3522,
+        "vusers.created_by_name.Homepage Load": 2153,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 1052,
+        "vusers.created_by_name.Model Status Poll": 316,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 317,
+        "vusers.created_by_name.Malformed Request Rejection": 164
+      },
+      "rates": {
+        "http.request_rate": 353
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672180001,
+      "lastCounterAt": 1790672189998,
+      "firstMetricAt": 1790672180001,
+      "lastMetricAt": 1790672189998,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672190000",
+      "counters": {
+        "vusers.created_by_name.Generate Workout (valid)": 217,
+        "vusers.created": 834,
+        "http.requests": 834,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 258,
+        "errors.ECONNREFUSED": 842,
+        "vusers.failed": 842,
+        "vusers.created_by_name.Model Status Poll": 83,
+        "vusers.created_by_name.Homepage Load": 497,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 83,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 501,
+        "vusers.created_by_name.Malformed Request Rejection": 37
+      },
+      "rates": {
+        "http.request_rate": 85
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672190001,
+      "lastCounterAt": 1790672199998,
+      "firstMetricAt": 1790672190001,
+      "lastMetricAt": 1790672199998,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672200000",
+      "counters": {
+        "vusers.created_by_name.Homepage Load": 297,
+        "vusers.created": 502,
+        "http.requests": 503,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 297,
+        "errors.ECONNREFUSED": 502,
+        "vusers.failed": 502,
+        "vusers.created_by_name.Generate Workout (valid)": 132,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 157,
+        "vusers.created_by_name.Model Status Poll": 48,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 48,
+        "vusers.created_by_name.Malformed Request Rejection": 25
+      },
+      "rates": {
+        "http.request_rate": 50
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672200007,
+      "lastCounterAt": 1790672209999,
+      "firstMetricAt": 1790672200007,
+      "lastMetricAt": 1790672209999,
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "period": "1790672210000",
+      "counters": {
+        "vusers.created_by_name.Homepage Load": 43,
+        "vusers.created": 74,
+        "http.requests": 74,
+        "plugins.metrics-by-endpoint./.errors.ECONNREFUSED": 44,
+        "errors.ECONNREFUSED": 75,
+        "vusers.failed": 75,
+        "vusers.created_by_name.Generate Workout (valid)": 21,
+        "plugins.metrics-by-endpoint./api/workout/generate.errors.ECONNREFUSED": 23,
+        "vusers.created_by_name.Model Status Poll": 8,
+        "plugins.metrics-by-endpoint./api/model-status.errors.ECONNREFUSED": 8,
+        "vusers.created_by_name.Malformed Request Rejection": 2
+      },
+      "rates": {
+        "http.request_rate": 46
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1790672210015,
+      "lastCounterAt": 1790672211987,
+      "firstMetricAt": 1790672210015,
+      "lastMetricAt": 1790672211987,
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}
