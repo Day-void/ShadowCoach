@@ -22,7 +22,7 @@ import {
   Environment,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { Info, Sparkles } from 'lucide-react';
+import { Info, Sparkles, RotateCcw } from 'lucide-react';
 import { useCoachStore } from '@/lib/store/useCoachStore';
 
 // ─── Geometry merge utility (no external dep) ─────────────────────────────
@@ -351,28 +351,44 @@ function FighterModel({ mode, isPlaying, speed, onPhase, goldColor }) {
   useEffect(() => {
     if (!groupRef.current) return;
 
-    // Clear previous
-    while (groupRef.current.children.length) groupRef.current.remove(groupRef.current.children[0]);
-    groupRef.current.add(mesh);
+    if (!mixerRef.current) {
+      // First mount: clear and initialize
+      while (groupRef.current.children.length) groupRef.current.remove(groupRef.current.children[0]);
+      groupRef.current.add(mesh);
 
-    // Setup mixer + clip
-    const clip   = buildClip(mode);
-    const mixer  = new THREE.AnimationMixer(mesh);
-    const action = mixer.clipAction(clip);
-    action.setLoop(THREE.LoopRepeat, Infinity);
-    action.timeScale = speed;
-    if (isPlaying) {
-      action.play();
-      clockRef.current.start();
+      const clip = buildClip(mode);
+      const mixer = new THREE.AnimationMixer(mesh);
+      const action = mixer.clipAction(clip);
+      action.setLoop(THREE.LoopRepeat, Infinity);
+      action.timeScale = speed;
+      if (isPlaying) {
+        action.play();
+        clockRef.current.start();
+      }
+
+      mixerRef.current = mixer;
+      actionRef.current = action;
+    } else {
+      // Smooth crossfade transition between movement modes
+      const oldAction = actionRef.current;
+      const newClip = buildClip(mode);
+      const newAction = mixerRef.current.clipAction(newClip);
+      newAction.reset();
+      newAction.setLoop(THREE.LoopRepeat, Infinity);
+      newAction.timeScale = speed;
+      newAction.play();
+
+      if (oldAction) {
+        oldAction.crossFadeTo(newAction, 0.35, true);
+      }
+
+      actionRef.current = newAction;
     }
 
-    mixerRef.current  = mixer;
-    actionRef.current = action;
-
     return () => {
-      mixer.stopAllAction();
+      // Clean up on component unmount
     };
-  }, [mode]); // Rebuild on mode change only
+  }, [mode]); // Re-crossfade smoothly on mode change
 
   // Sync playback
   useEffect(() => {
@@ -465,6 +481,7 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
   const [speed,     setSpeed]     = useState(1.0);
   const [phase,     setPhase]     = useState('High Guard');
   const [showInfo,  setShowInfo]  = useState(false);
+  const controlsRef               = useRef(null);
 
   const GOLD = isLight ? '#8a6e0c' : '#d4af37';
   const BG   = isLight ? '#f0f0f4' : '#0a0a10';
@@ -582,6 +599,7 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
 
           {/* Orbit controls */}
           <OrbitControls
+            ref={controlsRef}
             target={[0, 0.85, 0]}
             enablePan={false}
             minPolarAngle={Math.PI / 8}
@@ -615,7 +633,23 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
           {isPlaying ? '⏸ Pause' : '▶ Play'}
         </button>
 
-        <span style={{ fontSize:11, fontWeight:600, color: mutedCol }}>Speed:</span>
+        <button
+          onClick={() => {
+            if (controlsRef.current) {
+              controlsRef.current.reset();
+            }
+          }}
+          title="Reset Camera Angle"
+          style={{
+            display:'flex', alignItems:'center', gap:4, padding:'6px 12px',
+            borderRadius:8, fontWeight:600, fontSize:11, cursor:'pointer',
+            background: tabIdle.bg, color: tabIdle.color, border:`1px solid ${tabIdle.border}`,
+          }}>
+          <RotateCcw size={12} />
+          Reset View
+        </button>
+
+        <span style={{ fontSize:11, fontWeight:600, color: mutedCol, marginLeft: 4 }}>Speed:</span>
         {[0.5, 1.0, 1.5].map(s => (
           <button key={s} onClick={() => setSpeed(s)}
             style={{
