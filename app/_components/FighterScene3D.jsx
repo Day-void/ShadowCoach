@@ -19,7 +19,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import {
   OrbitControls,
   ContactShadows,
-  Environment,
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Info, Sparkles, RotateCcw } from 'lucide-react';
@@ -548,19 +547,23 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
           style={{ background: BG }}
           frameloop="always"
         >
-          {/* Lighting */}
-          <ambientLight intensity={isLight ? 1.1 : 0.45} />
+          {/* Studio Lighting - 100% self-contained, no external network fetch */}
+          <ambientLight intensity={isLight ? 1.2 : 0.65} />
           <directionalLight
-            position={[3, 6, 3]} intensity={isLight ? 1.6 : 2.2}
+            position={[3, 6, 3]} intensity={isLight ? 1.8 : 2.5}
             castShadow
             shadow-mapSize-width={1024} shadow-mapSize-height={1024}
             color={isLight ? '#fff9f0' : '#fff5cc'}
           />
-          <pointLight position={[-2.5, 3, -1]} intensity={0.7} color={GOLD} />
-          <pointLight position={[0, 5, 0.5]}   intensity={0.4} color={isLight ? '#ffffff' : '#ffd060'} />
-
-          {/* HDR environment for realistic reflections */}
-          <Environment preset={isLight ? 'apartment' : 'night'} />
+          {/* Key & rim lights for realistic fighter definition */}
+          <directionalLight position={[-3, 4, -2]} intensity={isLight ? 0.6 : 1.2} color={GOLD} />
+          <pointLight position={[-2.5, 3, -1]} intensity={0.8} color={GOLD} />
+          <pointLight position={[2.5, 2, 2]} intensity={0.5} color={isLight ? '#ffffff' : '#ffd060'} />
+          <hemisphereLight
+            skyColor={isLight ? '#f8fafc' : '#1e1b4b'}
+            groundColor={isLight ? '#e2e8f0' : '#0a0a10'}
+            intensity={isLight ? 0.7 : 0.4}
+          />
 
           {/* Soft contact shadows on the floor */}
           <ContactShadows
