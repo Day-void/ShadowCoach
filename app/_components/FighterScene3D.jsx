@@ -21,8 +21,9 @@ import {
   ContactShadows,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { Info, Sparkles, RotateCcw } from 'lucide-react';
+import { Info, Sparkles, RotateCcw, Activity } from 'lucide-react';
 import { useCoachStore } from '@/lib/store/useCoachStore';
+import { useRealtimeTelemetryBridge } from '@/lib/hooks/useRealtimeTelemetryBridge';
 
 // ─── Geometry merge utility (no external dep) ─────────────────────────────
 
@@ -232,57 +233,101 @@ function pt(name, times, positions) {
 }
 
 function buildClip(mode) {
-  if (mode === 'punch') {
-    const dur = 2.0;
+  const m = (mode || 'stance').toLowerCase();
+
+  if (m === 'jab' || m === 'punch') {
+    const dur = 1.6;
     return new THREE.AnimationClip('punch', dur, [
       // Spine rotates for cross
-      qt('spine', [0, 0.25, 0.45, 0.55, 0.75, 0.95, dur],
-         [[5,0,0],[5,0,0],[5,0,0],[5,8,0],[5,8,0],[5,0,0],[5,0,0]]),
-      // LEFT jab — t 0→0.4
+      qt('spine', [0, 0.2, 0.4, 0.5, 0.75, 0.95, dur],
+         [[5,0,0],[5,0,0],[5,0,0],[5,10,0],[5,10,0],[5,0,0],[5,0,0]]),
+      // LEFT jab — snaps forward with knuckles pronating
       qt('l_shoulder', [0, 0.12, 0.22, 0.38, 0.42, dur],
-         [[-8,-20,0],[-28,-12,0],[-82,-3,0],[-18,-20,0],[-8,-20,0],[-8,-20,0]]),
+         [[-8,-20,0],[-35,-12,0],[-85,-2,0],[-18,-20,0],[-8,-20,0],[-8,-20,0]]),
       qt('l_elbow', [0, 0.12, 0.22, 0.38, 0.42, dur],
          [[-42,0,0],[-18,0,0],[0,0,0],[-32,0,0],[-42,0,0],[-42,0,0]]),
-      // RIGHT cross — t 0.5→0.9
-      qt('r_shoulder', [0, 0.48, 0.60, 0.72, 0.88, 0.92, dur],
-         [[-8,20,0],[-8,20,0],[-14,14,0],[-78,3,0],[-14,20,0],[-8,20,0],[-8,20,0]]),
-      qt('r_elbow', [0, 0.48, 0.60, 0.72, 0.88, 0.92, dur],
+      // RIGHT cross — power hip & shoulder rotation
+      qt('r_shoulder', [0, 0.45, 0.58, 0.75, 0.9, 0.95, dur],
+         [[-8,20,0],[-8,20,0],[-18,14,0],[-80,2,0],[-14,20,0],[-8,20,0],[-8,20,0]]),
+      qt('r_elbow', [0, 0.45, 0.58, 0.75, 0.9, 0.95, dur],
          [[-42,0,0],[-42,0,0],[-28,0,0],[0,0,0],[-28,0,0],[-42,0,0],[-42,0,0]]),
-      // Stable legs
+      // Rear foot pivot on cross
+      qt('r_ankle', [0, 0.45, 0.75, 0.95, dur],
+         [[0,0,0], [0,0,0], [-15, 20, 0], [0,0,0], [0,0,0]]),
       pt('l_hip', [0, dur], [[-0.10, -0.05, 0.12], [-0.10, -0.05, 0.12]]),
       pt('r_hip', [0, dur], [[0.10, -0.05, -0.12], [0.10, -0.05, -0.12]]),
     ]);
   }
 
-  if (mode === 'squat') {
-    const dur = 2.6;
-    return new THREE.AnimationClip('squat', dur, [
-      pt('hips', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[0,0.95,0],[0,0.95,0],[0,0.60,0],[0,0.60,0],[0,0.95,0],[0,0.95,0]]),
-      qt('spine', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[5,0,0],[5,0,0],[18,0,0],[18,0,0],[5,0,0],[5,0,0]]),
-      qt('l_hip', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[0,0,6],[0,0,6],[-40,0,14],[-40,0,14],[0,0,6],[0,0,6]]),
-      qt('r_hip', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[0,0,-6],[0,0,-6],[-40,0,-14],[-40,0,-14],[0,0,-6],[0,0,-6]]),
-      qt('l_knee', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[0,0,0],[0,0,0],[82,0,0],[82,0,0],[0,0,0],[0,0,0]]),
-      qt('r_knee', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[0,0,0],[0,0,0],[82,0,0],[82,0,0],[0,0,0],[0,0,0]]),
-      // Arms extend forward for balance
-      qt('l_shoulder', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[-8,-20,0],[-8,-20,0],[-62,-8,0],[-62,-8,0],[-8,-20,0],[-8,-20,0]]),
-      qt('r_shoulder', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[-8,20,0],[-8,20,0],[-62,8,0],[-62,8,0],[-8,20,0],[-8,20,0]]),
-      qt('l_elbow', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[-42,0,0],[-42,0,0],[-8,0,0],[-8,0,0],[-42,0,0],[-42,0,0]]),
-      qt('r_elbow', [0, 0.6, 1.3, 1.8, 2.3, dur],
-         [[-42,0,0],[-42,0,0],[-8,0,0],[-8,0,0],[-42,0,0],[-42,0,0]]),
+  if (m === 'cross') {
+    const dur = 1.8;
+    return new THREE.AnimationClip('cross', dur, [
+      qt('spine', [0, 0.25, 0.55, 0.85, dur],
+         [[5, 0, 0], [6, 16, 0], [6, 18, 0], [5, 4, 0], [5, 0, 0]]),
+      qt('r_shoulder', [0, 0.25, 0.5, 0.8, dur],
+         [[-10, 20, 0], [-40, 10, 0], [-82, 0, 0], [-25, 18, 0], [-10, 20, 0]]),
+      qt('r_elbow', [0, 0.25, 0.5, 0.8, dur],
+         [[-45, 0, 0], [-20, 0, 0], [0, 0, 0], [-35, 0, 0], [-45, 0, 0]]),
+      qt('l_shoulder', [0, 0.5, dur],
+         [[-12, -22, 0], [-15, -25, 0], [-12, -22, 0]]),
+      qt('r_hip', [0, 0.25, 0.5, 0.8, dur],
+         [[0, 0, -6], [10, 15, -6], [12, 18, -6], [2, 4, -6], [0, 0, -6]]),
+      qt('r_ankle', [0, 0.25, 0.5, 0.8, dur],
+         [[0, 0, 0], [-15, 20, 0], [-20, 25, 0], [-5, 5, 0], [0, 0, 0]]),
     ]);
   }
 
-  if (mode === 'slip') {
-    const dur = 2.0;
+  if (m === 'kick') {
+    const dur = 2.2;
+    return new THREE.AnimationClip('kick', dur, [
+      pt('hips', [0, 0.45, 1.0, 1.5, dur],
+         [[0, 0.95, 0], [0, 0.98, -0.04], [0, 1.0, -0.02], [0, 0.96, 0], [0, 0.95, 0]]),
+      qt('spine', [0, 0.4, 0.95, 1.5, dur],
+         [[5, 0, 0], [-8, 20, -12], [-10, 25, -15], [0, 6, -2], [5, 0, 0]]),
+      // Plant left foot and pivot 45 degrees
+      qt('l_ankle', [0, 0.45, 1.0, 1.5, dur],
+         [[0, 0, 0], [0, 45, 0], [0, 50, 0], [0, 10, 0], [0, 0, 0]]),
+      // Chamber & extend right roundhouse kick
+      qt('r_hip', [0, 0.35, 0.7, 1.1, 1.6, dur],
+         [[0, 0, -6], [-40, -15, 30], [-75, -25, 70], [-70, -20, 65], [0, 0, -6], [0, 0, -6]]),
+      qt('r_knee', [0, 0.35, 0.75, 1.1, 1.6, dur],
+         [[0, 0, 0], [60, 0, 0], [10, 0, 0], [45, 0, 0], [0, 0, 0], [0, 0, 0]]),
+      // Arm swing for counter-momentum
+      qt('r_shoulder', [0, 0.55, 1.0, 1.5, dur],
+         [[-10, 20, 0], [25, 10, 0], [30, 5, 0], [-5, 18, 0], [-10, 20, 0]]),
+      qt('l_shoulder', [0, 0.55, 1.0, dur],
+         [[-10, -20, 0], [-25, -15, 0], [-25, -15, 0], [-10, -20, 0]]),
+    ]);
+  }
+
+  if (m === 'squat') {
+    const dur = 2.4;
+    return new THREE.AnimationClip('squat', dur, [
+      pt('hips', [0, 0.6, 1.2, 1.7, dur],
+         [[0,0.95,0],[0,0.95,0],[0,0.58,0],[0,0.95,0],[0,0.95,0]]),
+      qt('spine', [0, 0.6, 1.2, 1.7, dur],
+         [[5,0,0],[5,0,0],[20,0,0],[5,0,0],[5,0,0]]),
+      qt('l_hip', [0, 0.6, 1.2, 1.7, dur],
+         [[0,0,6],[0,0,6],[-42,0,14],[0,0,6],[0,0,6]]),
+      qt('r_hip', [0, 0.6, 1.2, 1.7, dur],
+         [[0,0,-6],[0,0,-6],[-42,0,-14],[0,0,-6],[0,0,-6]]),
+      qt('l_knee', [0, 0.6, 1.2, 1.7, dur],
+         [[0,0,0],[0,0,0],[84,0,0],[0,0,0],[0,0,0]]),
+      qt('r_knee', [0, 0.6, 1.2, 1.7, dur],
+         [[0,0,0],[0,0,0],[84,0,0],[0,0,0],[0,0,0]]),
+      qt('l_shoulder', [0, 0.6, 1.2, 1.7, dur],
+         [[-8,-20,0],[-8,-20,0],[-65,-8,0],[-8,-20,0],[-8,-20,0]]),
+      qt('r_shoulder', [0, 0.6, 1.2, 1.7, dur],
+         [[-8,20,0],[-8,20,0],[-65,8,0],[-8,20,0],[-8,20,0]]),
+      qt('l_elbow', [0, 0.6, 1.2, 1.7, dur],
+         [[-42,0,0],[-42,0,0],[-8,0,0],[-42,0,0],[-42,0,0]]),
+      qt('r_elbow', [0, 0.6, 1.2, 1.7, dur],
+         [[-42,0,0],[-42,0,0],[-8,0,0],[-42,0,0],[-42,0,0]]),
+    ]);
+  }
+
+  if (m === 'slip') {
+    const dur = 1.8;
     return new THREE.AnimationClip('slip', dur, [
       qt('spine', [0, 0.28, 0.56, 0.84, 1.12, 1.40, 1.68, dur],
          [[5,0,0],[5,0,-20],[5,0,-8],[5,0,0],[5,0,8],[5,0,20],[5,0,5],[5,0,0]]),
@@ -292,7 +337,6 @@ function buildClip(mode) {
          [[0,0,0],[0,0,8],[0,0,3],[0,0,0],[0,0,-3],[0,0,-8],[0,0,-3],[0,0,0]]),
       pt('hips', [0, 0.28, 0.56, 0.84, 1.12, 1.40, 1.68, dur],
          [[0,0.95,0],[0,0.90,0.04],[0,0.86,0],[0,0.95,0],[0,0.90,-0.04],[0,0.90,0.04],[0,0.92,0],[0,0.95,0]]),
-      // Arms stay tight in guard
       qt('l_shoulder', [0, dur], [[-8,-20,0], [-8,-20,0]]),
       qt('r_shoulder', [0, dur], [[-8,20,0],  [-8,20,0]]),
       qt('l_elbow', [0, dur], [[-42,0,0], [-42,0,0]]),
@@ -300,39 +344,53 @@ function buildClip(mode) {
     ]);
   }
 
-  // freestyle — jab → cross → slip → squat → explode (4s loop)
-  const dur = 4.0;
+  if (m === 'stance') {
+    const dur = 2.0;
+    return new THREE.AnimationClip('stance', dur, [
+      pt('hips', [0, 0.5, 1.0, 1.5, dur],
+         [[0, 0.95, 0], [0, 0.965, 0.02], [0, 0.95, 0], [0, 0.94, -0.02], [0, 0.95, 0]]),
+      qt('spine', [0, 0.5, 1.0, 1.5, dur],
+         [[5, 0, 0], [4, 1.5, 0], [5, 0, 0], [6, -1.5, 0], [5, 0, 0]]),
+      qt('l_shoulder', [0, 0.5, 1.0, 1.5, dur],
+         [[-10, -20, 0], [-12, -21, 0], [-10, -20, 0], [-8, -19, 0], [-10, -20, 0]]),
+      qt('r_shoulder', [0, 0.5, 1.0, 1.5, dur],
+         [[-10, 20, 0], [-8, 19, 0], [-10, 20, 0], [-12, 21, 0], [-10, 20, 0]]),
+      qt('l_elbow', [0, 1.0, dur], [[-45, 0, 0], [-42, 0, 0], [-45, 0, 0]]),
+      qt('r_elbow', [0, 1.0, dur], [[-48, 0, 0], [-45, 0, 0], [-48, 0, 0]]),
+      pt('l_hip', [0, dur], [[-0.10, -0.05, 0.12], [-0.10, -0.05, 0.12]]),
+      pt('r_hip', [0, dur], [[0.10, -0.05, -0.12], [0.10, -0.05, -0.12]]),
+    ]);
+  }
+
+  // freestyle — jab → cross → kick → slip → squat (4.4s loop)
+  const dur = 4.4;
   return new THREE.AnimationClip('freestyle', dur, [
-    qt('spine', [0, 0.25, 0.5, 0.75, 1.0, 1.4, 1.8, 2.0, 2.5, 3.0, 3.5, dur],
-       [[5,0,0],[5,0,0],[5,7,0],[5,7,0],[5,0,0],[5,0,-16],[5,0,-6],[20,0,0],[20,0,0],[5,0,0],[5,0,0],[5,0,0]]),
-    qt('l_shoulder', [0, 0.12, 0.22, 0.42, 1.4, 2.0, 2.5, dur],
-       [[-8,-20,0],[-80,-3,0],[-8,-20,0],[-8,-20,0],[-8,-20,0],[-60,-8,0],[-8,-20,0],[-8,-20,0]]),
-    qt('l_elbow', [0, 0.12, 0.22, 0.42, 2.0, 2.5, dur],
-       [[-42,0,0],[0,0,0],[-42,0,0],[-42,0,0],[-10,0,0],[-42,0,0],[-42,0,0]]),
-    qt('r_shoulder', [0, 0.55, 0.68, 0.80, 0.95, 1.4, 2.0, 2.5, dur],
-       [[-8,20,0],[-8,20,0],[-12,13,0],[-76,3,0],[-8,20,0],[-8,20,0],[-60,8,0],[-8,20,0],[-8,20,0]]),
-    qt('r_elbow', [0, 0.55, 0.68, 0.80, 0.95, 2.0, 2.5, dur],
-       [[-42,0,0],[-42,0,0],[-26,0,0],[0,0,0],[-42,0,0],[-10,0,0],[-42,0,0],[-42,0,0]]),
-    pt('hips', [0, 1.4, 2.0, 2.5, 3.0, 3.5, dur],
-       [[0,0.95,0],[0,0.95,0],[0,0.60,0],[0,0.60,0],[0,0.95,0],[0,0.95,0],[0,0.95,0]]),
-    qt('l_hip', [0, 2.0, 2.5, 3.0, 3.5, dur],
-       [[0,0,6],[0,0,6],[-40,0,14],[-40,0,14],[0,0,6],[0,0,6]]),
-    qt('r_hip', [0, 2.0, 2.5, 3.0, 3.5, dur],
-       [[0,0,-6],[0,0,-6],[-40,0,-14],[-40,0,-14],[0,0,-6],[0,0,-6]]),
-    qt('l_knee', [0, 2.0, 2.5, 3.0, 3.5, dur],
-       [[0,0,0],[0,0,0],[82,0,0],[82,0,0],[0,0,0],[0,0,0]]),
-    qt('r_knee', [0, 2.0, 2.5, 3.0, 3.5, dur],
-       [[0,0,0],[0,0,0],[82,0,0],[82,0,0],[0,0,0],[0,0,0]]),
+    qt('spine', [0, 0.25, 0.5, 0.75, 1.1, 1.6, 2.1, 2.7, 3.4, dur],
+       [[5,0,0],[5,0,0],[5,7,0],[5,7,0],[-8,18,-10],[5,0,-16],[5,0,-6],[20,0,0],[5,0,0],[5,0,0]]),
+    qt('l_shoulder', [0, 0.12, 0.22, 0.42, 1.6, 2.7, dur],
+       [[-8,-20,0],[-85,-3,0],[-8,-20,0],[-8,-20,0],[-8,-20,0],[-60,-8,0],[-8,-20,0]]),
+    qt('l_elbow', [0, 0.12, 0.22, 0.42, 2.7, dur],
+       [[-42,0,0],[0,0,0],[-42,0,0],[-42,0,0],[-10,0,0],[-42,0,0]]),
+    qt('r_shoulder', [0, 0.55, 0.68, 0.80, 1.1, 2.7, dur],
+       [[-8,20,0],[-8,20,0],[-12,13,0],[-78,3,0],[25,8,0],[-60,8,0],[-8,20,0]]),
+    qt('r_elbow', [0, 0.55, 0.68, 0.80, 1.1, 2.7, dur],
+       [[-42,0,0],[-42,0,0],[-26,0,0],[0,0,0],[-42,0,0],[-10,0,0],[-42,0,0]]),
+    qt('r_hip', [0, 0.9, 1.25, 1.6, 2.7, dur],
+       [[0,0,-6], [-35,-15,25], [-75,-25,65], [0,0,-6], [-40,0,-14], [0,0,-6]]),
+    qt('r_knee', [0, 0.9, 1.25, 1.6, 2.7, dur],
+       [[0,0,0], [50,0,0], [10,0,0], [0,0,0], [82,0,0], [0,0,0]]),
+    pt('hips', [0, 1.6, 2.1, 2.7, 3.4, dur],
+       [[0,0.95,0],[0,0.95,0],[0,0.90,0],[0,0.58,0],[0,0.95,0],[0,0.95,0]]),
   ]);
 }
 
-// ─── Phase labels per mode ────────────────────────────────────────────────
-
 const PHASES = {
+  stance:    ['Orthodox Stance', 'Weight Transfer', 'Guard Rhythm', 'Active Balance', 'Breathing Rhythm'],
   punch:     ['High Guard', 'Jab Loading', 'Jab Strike', 'Jab Snap', 'Reset', 'Cross Loading', 'Cross Strike', 'Cross Snap'],
+  kick:      ['Guard', 'Plant & Pivot', 'Chamber Knee', 'Roundhouse Extension', 'Hip Drive', 'Chamber Return', 'Guard'],
   squat:     ['Standing', 'Initiating', 'Descent', 'Parallel Depth', 'Drive Phase', 'Lock Out'],
   slip:      ['High Guard', 'Slip Left', 'Roll Under', 'Center Reset', 'Slip Right', 'Roll Under', 'Recover'],
-  freestyle: ['Guard', 'Jab Strike', 'Reset', 'Cross Strike', 'Combo Exit', 'Slip', 'Squat Load', 'Explode', 'Flow'],
+  freestyle: ['Guard', 'Jab Strike', 'Reset', 'Cross Strike', 'Kick Drive', 'Slip', 'Squat Load', 'Explode', 'Flow'],
 };
 
 // ─── FighterModel — lives inside Canvas ───────────────────────────────────
@@ -423,6 +481,17 @@ function FighterModel({ mode, isPlaying, speed, onPhase, goldColor }) {
 // ─── Exercise info ────────────────────────────────────────────────────────
 
 const INFO = {
+  stance: {
+    badge: 'Fundamental Stance',
+    muscles: 'Calves · Core Stabilisers · Postural Erectors',
+    cue: 'Orthodox combat guard: lead shoulder turned 45°, chin tucked, weight distributed 55/45.',
+    tips: [
+      'Elbows tucked tight against the ribcage to protect the liver and spleen',
+      'Weight resting primarily on the balls of the feet with knees slightly soft',
+      'Rear heel slightly elevated off the floor for explosive forward or backward propulsion',
+      'Hands at eye level with relaxed shoulders until strike initiation',
+    ],
+  },
   punch: {
     badge: 'Strike Biomechanics',
     muscles: 'Deltoids · Triceps · Core Rotators · Lats',
@@ -432,6 +501,17 @@ const INFO = {
       'Full extension without hyperextending the elbow joint',
       'Instant snap-retraction back to guard after each strike',
       'Drive power from hip rotation, not just the shoulder',
+    ],
+  },
+  kick: {
+    badge: 'Thai Roundhouse & Pivot',
+    muscles: 'Hip Flexors · Glutes · Abdominals · Calves',
+    cue: 'Step out 45°, pivot on the ball of the lead foot, turn hip over like swinging a baseball bat.',
+    tips: [
+      'Pivot support foot at least 90° to open hips fully for power delivery',
+      'Swing trailing arm down along the hip to generate counter-torque momentum',
+      'Keep lead hand glued to cheek or frame out to shield against counter-crosses',
+      'Drive with the lower third of the shin bone rather than the foot',
     ],
   },
   squat: {
@@ -459,7 +539,7 @@ const INFO = {
   freestyle: {
     badge: 'Full Combination Flow',
     muscles: 'Full Body — Cardiovascular + Strength + Coordination',
-    cue: 'Continuous output: jab → cross → slip → squat → explode. Never stop between techniques.',
+    cue: 'Continuous output: jab → cross → kick → slip → squat. Never stop between techniques.',
     tips: [
       'Maintain forward pressure and constant ring presence',
       'Link each technique to the next with no dead time',
@@ -480,7 +560,36 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
   const [speed,     setSpeed]     = useState(1.0);
   const [phase,     setPhase]     = useState('High Guard');
   const [showInfo,  setShowInfo]  = useState(false);
+  const [showGrid,  setShowGrid]  = useState(true);
+  const [autoSync,  setAutoSync]  = useState(false);
   const controlsRef               = useRef(null);
+
+  // Real-time backend state synchronization
+  const {
+    currentAction: backendAction,
+    playbackSpeed: backendSpeed,
+    isConnected: isBackendConnected,
+    setAction: setBackendAction,
+  } = useRealtimeTelemetryBridge({
+    initialAction: initialMode,
+    initialSpeed: 1.0,
+    autoSync,
+    syncIntervalMs: 3500,
+  });
+
+  // When live sync is active, react to incoming backend states
+  useEffect(() => {
+    if (autoSync && backendAction) {
+      const normalized = backendAction === 'jab' ? 'punch' : backendAction;
+      setMode(normalized);
+    }
+  }, [autoSync, backendAction]);
+
+  useEffect(() => {
+    if (autoSync && typeof backendSpeed === 'number') {
+      setSpeed(backendSpeed);
+    }
+  }, [autoSync, backendSpeed]);
 
   const GOLD = isLight ? '#8a6e0c' : '#d4af37';
   const BG   = isLight ? '#f0f0f4' : '#0a0a10';
@@ -492,9 +601,9 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
   const tabIdle    = isLight ? { bg:'#f1f5f9', color:'#64748b', border:'#e2e8f0' }
                              : { bg:'#1a1a24', color:'#6b7280', border:'#2a2a38' };
 
-  const info = INFO[mode];
-  const TABS = ['punch', 'squat', 'slip', 'freestyle'];
-  const LABELS = { punch:'Punch', squat:'Squat', slip:'Slip/Duck', freestyle:'Freestyle' };
+  const info = INFO[mode] || INFO.stance;
+  const TABS = ['stance', 'punch', 'kick', 'squat', 'slip', 'freestyle'];
+  const LABELS = { stance: 'Stance', punch: 'Punch', kick: 'Kick', squat: 'Squat', slip: 'Slip', freestyle: 'Combo' };
 
   return (
     <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
@@ -508,6 +617,28 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
           </span>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          {/* Real-time backend sync toggle */}
+          <button
+            onClick={() => setAutoSync((v) => !v)}
+            title="Toggle Live Backend Telemetry Synchronization"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              fontSize: 10,
+              fontWeight: 700,
+              padding: '3px 8px',
+              borderRadius: 14,
+              cursor: 'pointer',
+              background: autoSync ? 'rgba(34,197,94,0.15)' : tabIdle.bg,
+              border: `1px solid ${autoSync ? '#22c55e' : tabIdle.border}`,
+              color: autoSync ? '#22c55e' : mutedCol,
+            }}
+          >
+            <Activity size={11} className={autoSync ? 'animate-pulse' : ''} />
+            <span>{autoSync ? (isBackendConnected ? 'LIVE SYNC' : 'CONNECTING...') : 'MANUAL'}</span>
+          </button>
+
           <span style={{ fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:20, background:`${GOLD}22`, color:GOLD, border:`1px solid ${GOLD}44` }}>
             {phase}
           </span>
@@ -524,7 +655,11 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
       <div style={{ display:'flex', gap:4, padding:'10px 16px 6px' }}>
         {TABS.map(t => (
           <button key={t}
-            onClick={() => { setMode(t); setPhase('High Guard'); }}
+            onClick={() => {
+              setMode(t);
+              setPhase('High Guard');
+              setBackendAction(t);
+            }}
             style={{
               flex:1, padding:'6px 4px', borderRadius:8, fontSize:11, fontWeight:700,
               textTransform:'uppercase', letterSpacing:'0.08em', cursor:'pointer', transition:'all 0.18s',
@@ -582,6 +717,14 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
             goldColor={GOLD}
           />
 
+          {/* Footwork Grid Mapping Floor */}
+          {showGrid && (
+            <gridHelper
+              args={[6, 12, GOLD, isLight ? '#cbd5e1' : '#27272a']}
+              position={[0, 0.001, 0]}
+            />
+          )}
+
           {/* Octagon floor */}
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
             <planeGeometry args={[7, 7]} />
@@ -625,7 +768,7 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
       </div>
 
       {/* ── Playback controls ── */}
-      <div style={{ display:'flex', alignItems:'center', gap:8, padding:'10px 20px', borderTop:`1px solid ${cardBorder}` }}>
+      <div style={{ display:'flex', alignItems:'center', flexWrap: 'wrap', gap:8, padding:'10px 20px', borderTop:`1px solid ${cardBorder}` }}>
         <button
           onClick={() => setPlaying(v => !v)}
           style={{
@@ -652,16 +795,29 @@ export default function FighterScene3D({ initialMode = 'punch' }) {
           Reset View
         </button>
 
+        <button
+          onClick={() => setShowGrid(v => !v)}
+          title="Toggle Footwork Positioning Grid"
+          style={{
+            display:'flex', alignItems:'center', gap:4, padding:'6px 12px',
+            borderRadius:8, fontWeight:600, fontSize:11, cursor:'pointer',
+            background: showGrid ? `${GOLD}22` : tabIdle.bg,
+            color: showGrid ? GOLD : tabIdle.color,
+            border: `1px solid ${showGrid ? GOLD : tabIdle.border}`,
+          }}>
+          Grid: {showGrid ? 'ON' : 'OFF'}
+        </button>
+
         <span style={{ fontSize:11, fontWeight:600, color: mutedCol, marginLeft: 4 }}>Speed:</span>
-        {[0.5, 1.0, 1.5].map(s => (
+        {[0.25, 0.5, 1.0, 1.5].map(s => (
           <button key={s} onClick={() => setSpeed(s)}
             style={{
-              padding:'5px 10px', borderRadius:6, fontSize:11, fontWeight:700, cursor:'pointer', border:'none',
+              padding:'5px 9px', borderRadius:6, fontSize:11, fontWeight:700, cursor:'pointer', border:'none',
               ...(speed === s
                 ? { background: GOLD, color: isLight ? '#fff' : '#0a0a10' }
                 : { background: tabIdle.bg, color: tabIdle.color, border:`1px solid ${tabIdle.border}` })
             }}>
-            {s}×
+            {s === 0.25 ? '0.25× (Slow-Mo)' : `${s}×`}
           </button>
         ))}
       </div>
