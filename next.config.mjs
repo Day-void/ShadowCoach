@@ -18,13 +18,12 @@ const nextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      // Next.js requires 'unsafe-inline' for its inline style injection; nonces
-      // would be better but require custom server — acceptable trade-off here.
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      // Allow scripts from self and jsdelivr (used by MediaPipe web worker)
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net",
       "style-src 'self' 'unsafe-inline'",
-      // MediaPipe WASM + model files are fetched from Google CDN at runtime
-      "connect-src 'self' https://storage.googleapis.com https://api.groq.com",
-      "img-src 'self' data: blob:",
+      // MediaPipe models/WASM, Groq API, and Drei HDRI assets
+      "connect-src 'self' https://storage.googleapis.com https://cdn.jsdelivr.net https://api.groq.com https://raw.githack.com",
+      "img-src 'self' data: blob: https://raw.githack.com",
       // Camera feed goes through blob: URLs
       "media-src 'self' blob:",
       "worker-src 'self' blob:",
@@ -37,6 +36,13 @@ const nextConfig = {
     ].join('; ');
 
     return [
+      {
+        source: '/poseWorker.js',
+        headers: [
+          { key: 'Cross-Origin-Embedder-Policy', value: 'credentialless' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+        ],
+      },
       {
         source: '/:path*',
         headers: [
@@ -51,8 +57,7 @@ const nextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           // Camera needed for pose tracking. Mic/geo/payment all locked.
           { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(), usb=()' },
-          // Prevent clickjacking via CSP frame-ancestors (belt+suspenders with X-Frame-Options)
-          { key: 'Cross-Origin-Embedder-Policy', value: 'credentialless' },
+          // Prevent cross-origin leakage while allowing same-origin workers
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
           { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
         ],
